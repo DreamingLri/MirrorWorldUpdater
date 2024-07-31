@@ -16,10 +16,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python_version: 3.12
+
       - name: Zip file
         run: |
-          npm install mcdreforged
-          mcdreforged pack
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          python -m mcdreforged pack
 
       - name: Create Release
         id: create_release
@@ -41,3 +47,11 @@ jobs:
           asset_path: ./mirror_world_updater.mcdr
           asset_name: mirror_world_updater.mcdr
           asset_content_type: application/zip
+
+      - uses: actions/checkout@v4
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.9
+
+
