@@ -1,0 +1,43 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Public Releases
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # 仅在推送标签时触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions: write-all
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Zip file
+        run: |
+          npm install mcdreforged
+          mcdreforged pack
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload mcdr file
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./mirror_world_updater.mcdr
+          asset_name: mirror_world_updater.mcdr
+          asset_content_type: application/zip
