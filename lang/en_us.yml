@@ -5,3 +5,9 @@ mirror_world_updater:
     help: "show help list"
     sync: "sync from server"
     no_help: "No detailed help message for command {}"
+
+  text_component:
+
+  task:
+    welcome:
+      title: '{name} {version}'

@@ -1,3 +1,5 @@
+from abc import ABC
+
 from mcdreforged.api.all import *
 from typing import Union, Any
 
@@ -5,6 +7,17 @@ from typing import Union, Any
 def tr(key: str, *args, **kwargs) -> RTextBase:
     from mirror_world_updater import constants
     return ServerInterface.si().rtr(constants.PLUGIN_ID + '.' + key, *args, **kwargs)
+
+
+class TranslationContext(ABC):
+    def __init__(self, base_key: str):
+        self.__base_key = base_key
+
+    def tr(self, key: str, *args, **kwargs) -> RTextBase:
+        k = self.__base_key
+        if len(key) > 0:
+            k += '.' + key
+        return tr(k, *args, **kwargs)
 
 
 def reply_message(source: CommandSource, msg: Union[str, RTextBase], *, with_prefix: bool = True):

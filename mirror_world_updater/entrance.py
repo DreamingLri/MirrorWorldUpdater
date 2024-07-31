@@ -2,7 +2,7 @@ from typing import Optional
 
 from mcdreforged.api.all import *
 
-from mirror_world_updater.command.command import CommandManager
+from mirror_world_updater.mcdr.command.commands import CommandManager
 
 command_manager: Optional[CommandManager] = None
 
