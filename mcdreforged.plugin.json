@@ -1,0 +1,20 @@
+{
+	"id": "mirror_world_updater",
+	"version": "1.0.0",
+	"name": "MirrorWorldUpdater",
+	"description": {
+		"en_us": "Use Prime Backup to sync world files in mirror server",
+		"zh_cn": "利用Prime Backup在镜像服同步世界"
+	},
+	"author": "DreamingLri",
+	"link": "https://github.com/DreamingLri/MirrorWorldUpdater",
+    "dependencies": {
+        "mcdreforged": ">=2.0.0",
+		"prime_backup": ">=1.7.4"
+    },
+	"entrypoint": "mirror_world_updater.entrance",
+	"resources": [
+		"lang"
+	],
+	"archive_name": "welcome_message"
+}

@@ -1,0 +1,7 @@
+mirror_world_updater:
+  help:
+    help_header: "--------§a Welcome Message §r--------"
+    help_footer: "---------------------------------"
+    help: "show help list"
+    sync: "sync from server"
+    no_help: "No detailed help message for command {}"
