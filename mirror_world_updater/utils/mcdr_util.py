@@ -36,7 +36,7 @@ def click_and_run(message: Any, text: Any, command: str) -> RTextBase:
 
 def mkcmd(s: str) -> str:
     from mirror_world_updater.config.config import Config
-    cmd = Config.get().permission.perfix
+    cmd = Config.get().command.prefix
     if len(s) > 0:
         cmd += ' ' + s
     return cmd

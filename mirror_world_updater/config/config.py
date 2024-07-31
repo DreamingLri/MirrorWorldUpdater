@@ -14,6 +14,7 @@ class Config(Serializable):
     def get(cls) -> 'Config':
         if _config is None:
             return cls.__get_default()
+        return _config
 
     @classmethod
     @functools.lru_cache

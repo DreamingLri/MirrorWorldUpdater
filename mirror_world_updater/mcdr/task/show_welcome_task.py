@@ -3,8 +3,7 @@ from typing import Union
 
 from mcdreforged.api.all import *
 
-from mirror_world_updater.task.basic_task import _BasicTask
-from mirror_world_updater.utils import mcdr_util
+from mirror_world_updater.mcdr.task.basic_task import _BasicTask
 from mirror_world_updater.mcdr import mcdr_globals
 from mirror_world_updater.mcdr.text_components import TextComponent
 

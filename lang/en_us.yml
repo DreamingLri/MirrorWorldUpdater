@@ -1,13 +1,17 @@
 mirror_world_updater:
-  help:
-    help_header: "--------§a Welcome Message §r--------"
-    help_footer: "---------------------------------"
-    help: "show help list"
-    sync: "sync from server"
-    no_help: "No detailed help message for command {}"
-
-  text_component:
-
   task:
     welcome:
       title: '{name} {version}'
+    help:
+      commands:
+        content: |-
+          §7{prefix}§r: Display the welcome page
+          §7{prefix} help §e[<what>]§r: Display help message of all / given command
+          §7{prefix} sync §e[<pb_file>]§r: Sync world file from server. §e<pb_file>§r is an pb_file name
+
+        title: '[Command Help]'
+
+  command:
+    help:
+      no_help: No detailed help message for command {}
+      help: Use Prime Backup to sync world files in mirror server
