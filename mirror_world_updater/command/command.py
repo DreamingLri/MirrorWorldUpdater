@@ -33,8 +33,10 @@ class CommandManager:
         builder.command('help', self.cmd_help)
         builder.command('help <what>', self.cmd_help)
 
+        builder.arg('what', Text).suggests(lambda: COMMAND_HELP_LIST)
+
         root = (
-            Literal('!!mam')
+            Literal('!!mwu')
             .runs(self.cmd_help)
         )
         builder.add_children_for(root)

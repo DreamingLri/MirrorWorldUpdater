@@ -21,4 +21,4 @@ class Config(Serializable):
         return Config.get_default()
 
 
-_config = Optional[Config] = None
+_config: Optional[Config] = None
