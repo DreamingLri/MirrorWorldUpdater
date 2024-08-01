@@ -20,6 +20,8 @@ class UpstreamTask(_BasicTask, ABC):
 
     def set_upstream(self, server_name: str):
         self.config.paths.current_upstream = server_name
+        upstreams = self.config.paths.upstreams
+        upstreams.replace(self.config.paths.current_upstream, server_name)
         self.reply(self.tr('set_upstream_server_success', RText(server_name, RColor.dark_aqua)))
 
     def list_upstreams(self):
