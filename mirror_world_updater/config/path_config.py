@@ -9,6 +9,6 @@ class Paths(Serializable):
         'creative',
         'mirror'
     ]
-    destination_pb_file_directory: str = './pb_files/prime_backup.db'
+    destination_pb_file_directory: str = './pb_files'
     current_upstream: str = 'survival'
-    upstreams: str = "../survival/pb_files/prime_backup.db"
+    upstreams: str = "../survival/pb_files"
