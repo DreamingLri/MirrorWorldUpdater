@@ -40,11 +40,16 @@ class ShowHelpTask(_BasicTask[None], ABC):
     def run(self) -> None:
         if self.what is None:
             self.reply(self.tr('commands.title').set_color(RColor.blue))
-            self.__reply_help(self.tr('commands.content', prefix=self.__cmd_prefix), True)
+            self.__reply_help(self.tr('commands.welcome.content', prefix=self.__cmd_prefix), True)
 
         elif self.what in self.COMMANDS_WITH_DETAILED_HELP:
             if not self.__has_permission(self.what):
                 self.reply_tr('permission_denied', RText(self.what, RColor.gray))
                 return
+
+            elif self.what == 'list':
+                self.reply(self.tr('commands.title').set_color(RColor.blue))
+                self.__reply_help(self.tr('commands.list.content', prefix=self.__cmd_prefix), True)
+
         else:
             raise ValueError(self.what)
