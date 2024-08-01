@@ -25,6 +25,10 @@ mirror_world_updater:
       current_upstream: Current Upstream {}
       no_upstream: No upstream in config file
 
+    sync:
+      list_backups: BackupId {backup_id} Comment {comment}
+      no_backups: You haven't backup this server, please use '!!pb make' first
+
   command:
     help:
       no_help: No detailed help message for command {name}
@@ -32,3 +36,6 @@ mirror_world_updater:
 
     upstream:
       no_server: ServerList Not have server {name}
+
+    sync:
+      no_backup: No backup ID called {}

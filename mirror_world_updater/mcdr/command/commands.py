@@ -27,9 +27,17 @@ class CommandManager:
         show_welcome = ShowWelcomeTask(source)
         show_welcome.run()
 
-    def sync_world(self, source: CommandSource, _):
+    def sync_world(self, source: CommandSource, context: CommandContext):
+        backup_id = context.get('backup_id')
+        if backup_id is None:
+            reply_message(source, tr('command.sync.no_sync', RText(backup_id, RColor.red)))
+            return
         sync_task = SyncWorldTask(source)
-        sync_task.run()
+        sync_task.sync(backup_id)
+
+    def list_backups(self, source: CommandSource, _):
+        sync_task = SyncWorldTask(source)
+        sync_task.list_backups()
 
     def list_upstream(self, source: CommandSource, _):
         upstream_task = UpstreamTask(source)
@@ -40,9 +48,11 @@ class CommandManager:
         server_list = self.config.paths.server_list
         if server_name not in server_list:
             reply_message(source, tr('command.upstream.no_server', name=RText(server_name, RColor.red)))
+            return
         else:
             upstream_task = UpstreamTask(source)
             upstream_task.set_upstream(server_name)
+
 
     def register_commands(self):
         permissions = self.config.command.permissions
@@ -63,10 +73,10 @@ class CommandManager:
         builder.arg('what', Text).suggests(lambda: ShowHelpTask.COMMANDS_WITH_DETAILED_HELP)
 
         # sync
-        builder.command('sync', self.sync_world)
+        builder.command('sync <backup_id>', self.sync_world)
+        builder.command('sync list', self.list_backups)
 
         builder.arg('backup_id', Integer)
-        builder.arg('server_name', Text)
 
         # check
         builder.command('upstream', lambda src: self.cmd_help(src, {'what': 'upstream'}))
