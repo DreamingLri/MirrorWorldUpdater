@@ -10,7 +10,8 @@ from mirror_world_updater.mcdr.task.basic_task import _BasicTask
 class ShowHelpTask(_BasicTask[None], ABC):
     COMMANDS_WITH_DETAILED_HELP = [
         'help',
-        'sync'
+        'sync',
+        'upstream'
     ]
 
     @property
@@ -26,7 +27,7 @@ class ShowHelpTask(_BasicTask[None], ABC):
         self.what = what
 
     def __has_permission(self, literal: str) -> bool:
-        return self.source.has_permission(self.config.command.permission.get(literal))
+        return self.source.has_permission(self.config.command.permissions.get(literal))
 
     def __reply_help(self, msg: RTextBase, hide_for_permission: bool = False):
         for h in help_message_utils.parse_help_message(msg):
@@ -47,9 +48,9 @@ class ShowHelpTask(_BasicTask[None], ABC):
                 self.reply_tr('permission_denied', RText(self.what, RColor.gray))
                 return
 
-            elif self.what == 'list':
+            elif self.what == 'upstream':
                 self.reply(self.tr('commands.title').set_color(RColor.blue))
-                self.__reply_help(self.tr('commands.list.content', prefix=self.__cmd_prefix), True)
+                self.__reply_help(self.tr('commands.upstream.content', prefix=self.__cmd_prefix), True)
 
         else:
             raise ValueError(self.what)
