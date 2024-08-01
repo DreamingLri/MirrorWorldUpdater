@@ -14,19 +14,21 @@ mirror_world_updater:
         upstream:
           content: |-
             §7{prefix}§r: Show the upstream help
-            §7{prefix} list §r: List all upstreams 
-            §7{prefix} set §e<server_name>§r: Set upstream from server_name
+            §7{prefix} upstream list §r: List all upstreams 
+            §7{prefix} upstream set §e<server_name>§r: Set upstream from server_name
 
         title: '[Command Help]'
 
     upstream:
-      set_upstream_server_success: Set upstream server {} success
+      set_upstream_server_success: Set upstream server to {}
       title: Upstream List
+      current_upstream: Current Upstream {}
+      no_upstream: No upstream in config file
 
   command:
     help:
-      no_help: No detailed help message for command {}
+      no_help: No detailed help message for command {name}
       help: Use Prime Backup to sync world files in mirror server
 
     upstream:
-      no_server: ServerList Not have server {}
+      no_server: ServerList Not have server {name}
