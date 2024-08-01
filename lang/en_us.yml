@@ -4,14 +4,29 @@ mirror_world_updater:
       title: '{name} {version}'
     help:
       commands:
-        content: |-
-          §7{prefix}§r: Display the welcome page
-          §7{prefix} help §e[<what>]§r: Display help message of all / given command
-          §7{prefix} sync §e[<pb_file>]§r: Sync world file from server. §e<pb_file>§r is an pb_file name
+        welcome:
+          content: |-
+            §7{prefix}§r: Display the welcome page
+            §7{prefix} help §e[<what>]§r: Display help message of all / given command
+            §7{prefix} sync §e[<pb_file>]§r: Sync world file from server. §e<pb_file>§r is an pb_file name
+            §7{prefix} list [...]§r: List servers and their backups. See §7{prefix} help list§r for detailed help
+
+        upstream:
+          content: |-
+            §7{prefix}§r: Show the upstream help
+            §7{prefix} list §r: List all upstreams 
+            §7{prefix} set §e<server_name>§r: Set upstream from server_name
 
         title: '[Command Help]'
+
+    upstream:
+      set_upstream_server_success: Set upstream server {} success
+      title: Upstream List
 
   command:
     help:
       no_help: No detailed help message for command {}
       help: Use Prime Backup to sync world files in mirror server
+
+    upstream:
+      no_server: ServerList Not have server {}
