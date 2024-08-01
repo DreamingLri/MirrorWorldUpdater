@@ -7,7 +7,6 @@ from mirror_world_updater.mcdr.task.upstream_task import UpstreamTask
 from mirror_world_updater.utils.mcdr_util import *
 from mirror_world_updater.mcdr.task.show_welcome_task import ShowWelcomeTask
 
-COMMAND_HELP_LIST = ['sync', 'list']
 
 
 class CommandManager:
@@ -17,8 +16,8 @@ class CommandManager:
 
     def cmd_help(self, source: CommandSource, context: dict):
         what = context.get('what')
-        if what is not None and what not in COMMAND_HELP_LIST:
-            reply_message(source, tr('command.help.no_help', RText(f'!!mwu {what}', RColor.red)))
+        if what is not None and what not in ShowHelpTask.COMMANDS_WITH_DETAILED_HELP:
+            reply_message(source, tr('command.help.no_help', name=RText(f'!!mwu {what}', RColor.red)))
             return
         else:
             help_task = ShowHelpTask(source, what)
@@ -40,7 +39,7 @@ class CommandManager:
         server_name = context.get('server_name')
         server_list = self.config.paths.server_list
         if server_name not in server_list:
-            reply_message(source, tr('command.upstream.no_server', RText(server_name, RColor.red)))
+            reply_message(source, tr('command.upstream.no_server', name=RText(server_name, RColor.red)))
         else:
             upstream_task = UpstreamTask(source)
             upstream_task.set_upstream(server_name)
@@ -61,7 +60,7 @@ class CommandManager:
         builder.command('help', self.cmd_help)
         builder.command('help <what>', self.cmd_help)
 
-        builder.arg('what', Text).suggests(lambda: COMMAND_HELP_LIST)
+        builder.arg('what', Text).suggests(lambda: ShowHelpTask.COMMANDS_WITH_DETAILED_HELP)
 
         # sync
         builder.command('sync', self.sync_world)
@@ -70,7 +69,7 @@ class CommandManager:
         builder.arg('server_name', Text)
 
         # check
-        builder.command('upstream', self.cmd_help)
+        builder.command('upstream', lambda src: self.cmd_help(src, {'what': 'upstream'}))
         builder.command('upstream list', self.list_upstream)
         builder.command('upstream set <server_name>', self.set_upstream)
 

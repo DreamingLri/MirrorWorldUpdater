@@ -6,7 +6,7 @@ from mcdreforged.api.all import *
 class Paths(Serializable):
     server_list: List[str] = [
         'survival',
-        'creative'
+        'creative',
         'mirror'
     ]
     destination_world_directory: str = './server/world'
