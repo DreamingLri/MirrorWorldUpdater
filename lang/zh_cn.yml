@@ -1,9 +1,49 @@
 mirror_world_updater:
-  help:
-    help: "show help list"
-    sync: "sync from server"
-    no_help: "No detailed help message for command {}"
-
   task:
     welcome:
+      name: welcome
       title: '{name} {version}'
+    help:
+      name: help
+      commands:
+        welcome:
+          content: |-
+            §7{prefix}§r: 展示欢迎信息
+            §7{prefix} help §e[<what>]§r: 展示所有帮助信息
+            §7{prefix} sync §r: 从目标服务器中同步世界到此处，使用之前请先设置目标服务器
+            §7{prefix} upstream [...]§r: 列出目标服务器和设置目标服务器。详见 §7{prefix} help list§r
+
+        upstream:
+          content: |-
+            §7{prefix}§r: 设置目标服务器帮助
+            §7{prefix} upstream list §r: 展示所有目标服务器 
+            §7{prefix} upstream set §e<server_name>§r: 设置目标服务器
+
+        title: '[参数帮助]'
+
+    upstream:
+      name: upstream
+      set_upstream_server_success: 设置目标服务器到 {}
+      title: 目标服务器列表
+      current_upstream: 当前目标服务器 {}
+      no_upstream: 当前没有目标服务器
+
+    sync:
+      name: sync
+      list_backups: BackupId {backup_id} Comment {comment}
+      no_backups: You haven't backup this server, please use '!!pb make' first
+      countdown: '{} 秒后，世界将从 {} 同步'
+      countdown.hover: 点我或输入 {} 以终止回档
+      success: 这个世界已经成功同步至 {}
+      error: 同步失败，错误为 {}
+      duplicate: 不能同步当前服务器，请修改目标服务器
+
+  command:
+    help:
+      no_help: {name} 参数没有详细参数信息
+
+    upstream:
+      no_server: 服务器列表没有当前服务器 {name}
+
+    sync:
+      no_backup: No backup ID called {}

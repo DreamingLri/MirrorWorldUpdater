@@ -1,8 +1,10 @@
 mirror_world_updater:
   task:
     welcome:
+      name: welcome
       title: '{name} {version}'
     help:
+      name: help
       commands:
         welcome:
           content: |-
@@ -20,14 +22,21 @@ mirror_world_updater:
         title: '[Command Help]'
 
     upstream:
+      name: upstream
       set_upstream_server_success: Set upstream server to {}
       title: Upstream List
       current_upstream: Current Upstream {}
       no_upstream: No upstream in config file
 
     sync:
+      name: sync
       list_backups: BackupId {backup_id} Comment {comment}
       no_backups: You haven't backup this server, please use '!!pb make' first
+      countdown: '{} second later, the world will be sync to {}'
+      countdown.hover: Click me or enter command {} to abort restore
+      success: This server has sync to {} successful
+      error: Sync failed, Error as {}
+      duplicate: You need to set upstream server first!
 
   command:
     help:
