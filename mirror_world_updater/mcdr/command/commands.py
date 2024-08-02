@@ -64,7 +64,6 @@ class CommandManager:
             return tr('error.permission_denied').set_color(RColor.red)
 
         builder = SimpleCommandBuilder()
-        self.server.register_help_message(self.config.command.prefix, tr('command.help.help'))
 
         # help
         builder.command('help', self.cmd_help)
