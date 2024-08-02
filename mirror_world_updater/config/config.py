@@ -14,15 +14,21 @@ class Config(Serializable):
     paths: Paths = Paths()
 
     @classmethod
-    def get(cls) -> 'Config':
-        if _config is None:
-            return cls.__get_default()
-        return _config
-
-    @classmethod
     @functools.lru_cache
     def __get_default(cls) -> 'Config':
         return Config.get_default()
 
+    @classmethod
+    def get(cls) -> 'Config':
+        if _config is None:
+            print('default config')
+            return cls.__get_default()
+        return _config
+
 
 _config: Optional[Config] = None
+
+
+def set_config_instance(cfg: Config):
+    global _config
+    _config = cfg
