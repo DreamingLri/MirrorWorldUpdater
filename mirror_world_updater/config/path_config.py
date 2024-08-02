@@ -11,4 +11,4 @@ class Paths(Serializable):
     ]
     destination_pb_file_directory: str = './pb_files'
     current_upstream: str = 'survival'
-    upstreams: str = "../survival/pb_files"
+    upstreams: str = '../survival/pb_files'
