@@ -32,7 +32,6 @@ mirror_world_updater:
   command:
     help:
       no_help: No detailed help message for command {name}
-      help: Use Prime Backup to sync world files in mirror server
 
     upstream:
       no_server: ServerList Not have server {name}
