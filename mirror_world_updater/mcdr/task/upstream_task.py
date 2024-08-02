@@ -19,14 +19,18 @@ class UpstreamTask(_BasicTask, ABC):
         pass
 
     def set_upstream(self, server_name: str):
-        self.config.paths.current_upstream = server_name
-        upstreams = self.config.paths.upstreams
-        upstreams.replace(self.config.paths.current_upstream, server_name)
+        config = self.config.get()
+        upstreams = config.paths.upstreams
+        upstreams = upstreams.replace(config.paths.current_upstream, server_name)
+        config.paths.current_upstream = server_name
+        config.paths.upstreams = upstreams
+        self.server.save_config_simple(config)
         self.reply(self.tr('set_upstream_server_success', RText(server_name, RColor.dark_aqua)))
 
     def list_upstreams(self):
-        server_list = self.config.paths.server_list
-        current_upstream = self.config.paths.current_upstream
+        config = self.config.get()
+        server_list = config.paths.server_list
+        current_upstream = config.paths.current_upstream
         self.reply(self.tr('title'))
         self.reply(self.tr('current_upstream', RText(current_upstream, RColor.dark_aqua)))
         if len(current_upstream) == 0:
