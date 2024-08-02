@@ -26,6 +26,13 @@ def reply_message(source: CommandSource, msg: Union[str, RTextBase], *, with_pre
     source.reply(msg)
 
 
+def broadcast_message(msg: Union[str, RTextBase], *, with_prefix: bool = True):
+    if with_prefix:
+        msg = RTextList(__make_message_prefix(), msg)
+    from mirror_world_updater.mcdr import mcdr_globals
+    mcdr_globals.server.broadcast(msg)
+
+
 def __make_message_prefix() -> RTextBase:
     return RTextList(RText('[MWU]', RColor.dark_aqua).h('Mirror World Updater'), ' ')
 
