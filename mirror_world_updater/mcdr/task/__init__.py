@@ -15,6 +15,9 @@ class Task(Generic[T], mcdr_util.TranslationContext, ABC):
         self.source = source
         self.server = mcdr_globals.server
 
+    def get_name_text(self) -> RTextBase:
+        return self.tr('name').set_color(RColor.aqua)
+
     @property
     @abstractmethod
     def id(self) -> str:

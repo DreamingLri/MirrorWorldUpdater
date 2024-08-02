@@ -9,6 +9,7 @@ class Paths(Serializable):
         'creative',
         'mirror'
     ]
-    destination_pb_file_directory: str = './pb_files'
     current_upstream: str = 'survival'
-    upstreams: str = '../survival/pb_files'
+    # pb_path: str = '../survival/pb_files/'
+    world_path: str = '../mirror/server/world'
+    sync_path: str = '../survival/server/world'

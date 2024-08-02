@@ -9,7 +9,8 @@ from mirror_world_updater.config.path_config import Paths
 
 class Config(Serializable):
     enabled: bool = True
-    backup_before_update: bool = True
+    backup_before_sync: bool = True
+    sync_countdown_sec: int = 10
     command: CommandConfig = CommandConfig()
     paths: Paths = Paths()
 

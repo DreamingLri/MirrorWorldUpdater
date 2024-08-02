@@ -1,5 +1,5 @@
 import functools
-from typing import Optional, Callable
+from typing import Optional, Callable, Type
 from mirror_world_updater.config.config import Config
 from mirror_world_updater.mcdr.task.show_help_task import ShowHelpTask
 from mirror_world_updater.mcdr.task.sync_world_task import SyncWorldTask
@@ -23,17 +23,25 @@ class CommandManager:
             help_task = ShowHelpTask(source, what)
             help_task.run()
 
-    def cmd_welcome(self, source: CommandSource, context: CommandContext):
+    def cmd_welcome(self, source: CommandSource, _):
         show_welcome = ShowWelcomeTask(source)
         show_welcome.run()
 
-    def sync_world(self, source: CommandSource, context: CommandContext):
-        backup_id = context.get('backup_id')
-        if backup_id is None:
-            reply_message(source, tr('command.sync.no_sync', RText(backup_id, RColor.red)))
-            return
+    def sync_world(self, source: CommandSource, _):
+        # backup_id = context.get('backup_id')
+        # if backup_id is None:
+        #     reply_message(source, tr('command.sync.no_sync', RText(backup_id, RColor.red)))
+        #     return
         sync_task = SyncWorldTask(source)
-        sync_task.sync(backup_id)
+        sync_task.sync()
+
+    # def sync_confirm(self, source: CommandSource, _):
+    #     sync_task = SyncWorldTask(source)
+    #     sync_task.confirm()
+    #
+    # def sync_abort(self, source: CommandSource, _):
+    #     sync_task = SyncWorldTask(source)
+    #     sync_task.abort()
 
     def list_backups(self, source: CommandSource, _):
         sync_task = SyncWorldTask(source)
@@ -53,7 +61,6 @@ class CommandManager:
             upstream_task = UpstreamTask(source)
             upstream_task.set_upstream(server_name)
 
-
     def register_commands(self):
         permissions = self.config.command.permissions
 
@@ -62,6 +69,14 @@ class CommandManager:
 
         def get_permission_denied_text():
             return tr('error.permission_denied').set_color(RColor.red)
+
+        def create_subcommand(literal: str) -> Literal:
+            node = Literal(literal)
+            node.requires(get_permission_checker(literal), get_permission_denied_text)
+            return node
+
+        def set_confirm_able(node: AbstractNode):
+            node.then(CountingLiteral('confirm', 'confirm').redirects(node))
 
         builder = SimpleCommandBuilder()
 
@@ -72,10 +87,10 @@ class CommandManager:
         builder.arg('what', Text).suggests(lambda: ShowHelpTask.COMMANDS_WITH_DETAILED_HELP)
 
         # sync
-        builder.command('sync <backup_id>', self.sync_world)
-        builder.command('sync list', self.list_backups)
+        builder.command('sync', self.sync_world)
 
-        builder.arg('backup_id', Integer)
+        # builder.command('sync confirm', self.sync_confirm)
+        # builder.command('sync abort', self.sync_abort)
 
         # check
         builder.command('upstream', lambda src: self.cmd_help(src, {'what': 'upstream'}))
@@ -90,5 +105,7 @@ class CommandManager:
             .runs(self.cmd_welcome)
         )
         builder.add_children_for(root)
+
+        root.then(make_sync_cmd())
 
         self.server.register_command(root)
