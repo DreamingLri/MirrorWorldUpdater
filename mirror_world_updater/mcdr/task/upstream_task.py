@@ -20,10 +20,12 @@ class UpstreamTask(_BasicTask, ABC):
 
     def set_upstream(self, server_name: str):
         config = self.config.get()
-        upstreams = config.paths.upstreams
-        upstreams = upstreams.replace(config.paths.current_upstream, server_name)
+        # pb_path = config.paths.pb_path
+        # pb_path = pb_path.replace(config.paths.current_upstream, server_name)
+        sync_path = '../' + server_name + '/server/world'
         config.paths.current_upstream = server_name
-        config.paths.upstreams = upstreams
+        # config.paths.pb_path = pb_path
+        config.paths.sync_path = sync_path
         self.server.save_config_simple(config)
         self.reply(self.tr('set_upstream_server_success', RText(server_name, RColor.dark_aqua)))
 
