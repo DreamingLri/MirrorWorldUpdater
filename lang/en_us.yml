@@ -1,0 +1,6 @@
+mirror_world_updater:
+  command:
+    help:
+      no_help: No detailed help message for command {}
+
+  task:

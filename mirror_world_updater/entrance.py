@@ -23,3 +23,4 @@ def on_load(server: PluginServerInterface, old):
         server.register_help_message(config.command.prefix, mcdr_globals.metadata.get_description_rtext())
     except Exception as e:
         server.logger.error('Failed to load config: {}'.format(e))
+
