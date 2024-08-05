@@ -2,6 +2,8 @@ mirror_world_updater:
   command:
     help:
       no_help: No detailed help message for command {}
+    upstream:
+      no_server: No server Name, Please input a server name
 
   task:
     help:
@@ -20,9 +22,11 @@ mirror_world_updater:
           §7{prefix} upstream §e<server>§r: Set upstream server to §7<server>§r
 
     upstream:
-      commands:
-        content: |-
-          
+      title: '[Upstream List]'
+      current_upstream: Current Upstream {name}, Path {path}
+      no_upstream: No upstream name {} in upstream_list
+      set_success: Set Upstream to Server {} Successfully
+      list_upstream: Name {name}, Path {path}
 
     sync:
 
