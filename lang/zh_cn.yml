@@ -1,0 +1,57 @@
+mirror_world_updater:
+  command:
+    help:
+      no_help: 没有帮助信息关于命令 {}
+    upstream:
+      no_server: 没有服务器名称，请输入一个服务器名称
+    confirm:
+      no_confirm: 没有什么需要确认的
+
+  task:
+    help:
+      commands:
+        title: '[命令帮助]'
+        content: |-
+          §7{prefix}§r: 展示欢迎界面
+          §7{prefix} help §e[<what>]§r: 展示全部指令/给定指令的详细帮助
+          §7{prefix} update §r: 从目标服务器同步世界
+          §7{prefix} upstream [...]§r: 展示目标服务器和服务器列表 详情请查看 §7{prefix} help upstream§r 
+
+      node_help:
+        title: '[详细帮助]'
+        upstream: |-
+          §7{prefix} upstream list §r: 展示目标服务器列表
+          §7{prefix} upstream §e<server>§r: 设置目标服务器为 §7<server>§r
+
+    upstream:
+      title: '[目标服务器列表]'
+      current_upstream: 当前目标服务器是 {name}, 文件路径为 {path}
+      no_upstream: 在目标服务器列表中没有 {} 服务器
+      set_success: 已成功设置目标服务器为 {}
+      list_upstream: 服务器名称 {name}, 地址 {path}
+
+    sync:
+      echo: 开始同步世界
+      confirm_hint: 使用 {} confirm 命令来确认同步
+      confirm_hover: 点击以确认同步
+      abort_hint: {} 取消
+      abort_hover: 点击以取消同步
+      abort: 取消同步
+      aborted: 同步已取消!
+      path:
+        not_exist: {} 不存在
+        not_a_dir: {} 不是一个目录
+      countdown:
+        intro: {} 秒后同步世界
+        text: {} 秒后世界将被同步, 点击这里以取消同步'
+        hover: 点击这里以取消同步！
+
+    welcome:
+      title: '{name} {version}'
+      common_commands: '[命令帮助]'
+      common_commands.hover: '输入命令 {} 来查看详细命令帮助'
+
+  text_component:
+    command:
+      run: '点击以执行{}'
+      suggest: '点击以补全{}'

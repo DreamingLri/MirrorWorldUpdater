@@ -4,6 +4,8 @@ mirror_world_updater:
       no_help: No detailed help message for command {}
     upstream:
       no_server: No server Name, Please input a server name
+    confirm:
+      no_confirm: Nothing to confirm
 
   task:
     help:
@@ -29,6 +31,20 @@ mirror_world_updater:
       list_upstream: Name {name}, Path {path}
 
     sync:
+      echo: Start to sync worlds
+      confirm_hint: Use {} confirm to confirm sync
+      confirm_hover: Click to confirm
+      abort_hint: {} abort to abort
+      abort_hover: Click to abort
+      abort: Aborting sync
+      aborted: Sync aborted!
+      path:
+        not_exist: {} is not existed
+        not_a_dir: {} is not a directory
+      countdown:
+        intro: §cSync§r the worlds after {0} seconds
+        text: {} second later the world will be synced, click here to abort'
+        hover: Click here to abort sync！
 
     welcome:
       title: '{name} {version}'
