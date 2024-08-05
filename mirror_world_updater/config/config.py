@@ -12,7 +12,7 @@ class Config(Serializable):
     count_down: int = 10
     backup_before_sync: bool = True
     ignore_session_lock: bool = True
-    prefix: str = '!!wu'
+    prefix: str = '!!sync'
 
     # func
     @classmethod
