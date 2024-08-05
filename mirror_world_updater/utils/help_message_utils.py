@@ -3,7 +3,7 @@ from typing import NamedTuple, List, Optional
 
 from mcdreforged.api.all import *
 
-from prime_backup.config.config import Config
+from mirror_world_updater.config.config import Config
 
 
 class HelpMessageLine(NamedTuple):
@@ -19,7 +19,7 @@ class HelpMessageLine(NamedTuple):
 
 def parse_help_message(msg: RTextBase) -> List[HelpMessageLine]:
     config = Config.get()
-    prefix = config.command.prefix
+    prefix = config.prefix
     result = []
     for line in msg.to_plain_text().splitlines():
         suggest_match = re.search(r'(?<=§7){}[-\w ]*(?=[§\[<])'.format(prefix), line)
@@ -32,7 +32,7 @@ def parse_help_message(msg: RTextBase) -> List[HelpMessageLine]:
         cmd_match = re.match(r'(§7){} (\w+)([§ ])'.format(prefix), line)
         if cmd_match is not None:
             literal = cmd_match.group(2)
-            permission = config.command.permission.get(literal)
+            permission = config.permission.get(literal)
         elif line.startswith(f'§7{prefix}§r'):  # root node
             literal = ''
             permission = 0

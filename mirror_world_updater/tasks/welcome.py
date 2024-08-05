@@ -5,18 +5,19 @@ from mcdreforged.api.all import *
 
 from mirror_world_updater import mcdr_globals
 from mirror_world_updater.tasks.help import HelpMessage
-from mirror_world_updater.tasks.task import Task
+from mirror_world_updater.tasks.__init__ import Task
 from mirror_world_updater.text_component import TextComponent
 from mirror_world_updater.utils import help_message_utils
 from mirror_world_updater.utils.utils import mk_cmd
 
 
 class Welcome(Task, ABC):
-    COMMON_COMMANDS = ['', 'help', 'upstream', 'sync', 'confirm', 'abort']
+    COMMON_COMMANDS = ['', 'help', 'upstream', 'update', 'confirm', 'abort']
 
     def __init__(self, source: CommandSource):
         super().__init__(source)
 
+    @property
     def id(self) -> str:
         return 'welcome'
 
@@ -48,6 +49,6 @@ class Welcome(Task, ABC):
 
     @property
     def __cmd_prefix(self) -> str:
-        return self.config.command.prefix
+        return self.config.prefix
 
 

@@ -10,8 +10,8 @@ def tr(key: str, *args, **kwargs) -> RTextBase:
 
 
 def mk_cmd(s: str) -> str:
-    from prime_backup.config.config import Config
-    cmd = Config.get().command.prefix
+    from mirror_world_updater.config.config import Config
+    cmd = Config.get().prefix
     if len(s) > 0:
         cmd += ' ' + s
     return cmd
@@ -39,7 +39,7 @@ def broadcast_message(msg: Union[str, RTextBase], *, with_prefix: bool = True):
 
 
 class TranslationContext(ABC):
-    def __init__(self, base_key):
+    def __init__(self, base_key: str):
         self.__base_key = base_key
 
     def tr(self, key: str, *args, **kwargs) -> RTextBase:
