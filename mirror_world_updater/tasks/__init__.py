@@ -1,5 +1,5 @@
-from abc import abstractmethod
-from typing import Union
+from abc import abstractmethod, ABC
+from typing import Union, TypeVar, Generic
 
 from mcdreforged.api.all import *
 
@@ -10,7 +10,7 @@ from mirror_world_updater.utils.utils import tr
 from mirror_world_updater.utils.utils import TranslationContext
 
 
-class Task(TranslationContext):
+class Task(TranslationContext, ABC):
     def __init__(self, source: CommandSource):
         super().__init__(f'task.{self.id}')
         self.source = source
@@ -31,5 +31,3 @@ class Task(TranslationContext):
 
     def broadcast(self, msg: Union[str, RTextBase], *, with_prefix: bool = True):
         utils.broadcast_message(msg, with_prefix=with_prefix)
-
-
