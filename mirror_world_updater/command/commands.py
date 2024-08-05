@@ -1,3 +1,6 @@
+import functools
+from typing import Callable
+
 from mcdreforged.api.all import *
 
 from mirror_world_updater.config.config import Config
@@ -13,13 +16,15 @@ class CommandManager:
         self.server = server
         self.config = Config.get()
 
+    # call functions
+
     def cmd_help(self, source: CommandSource, context: dict):
         what = context.get('what')
-        if what is not None and what not in HelpMessage:
+        if what is not None and what not in HelpMessage.COMMANDS_WITH_DETAILED_HELP:
             reply_message(source, tr('command.help.no_help', RText(mk_cmd(what), RColor.gray)))
             return
 
-        HelpMessage(source).show_help()
+        HelpMessage(source).show_help(what)
 
     def set_upstream(self, source: CommandSource, context: CommandContext):
         server_name = context['server']
@@ -30,8 +35,9 @@ class CommandManager:
     def list_upstream(self, source: CommandSource):
         Upstream(source).list_upstream()
 
-    def cmd_sync(self, source: CommandSource):
-        Sync(source).update_world()
+    def cmd_sync(self, source: CommandSource, context: CommandContext):
+        needs_confirm = context.get('confirm', 0) == 0
+        Sync(source).update_world(needs_confirm=needs_confirm)
 
     def cmd_welcome(self, source: CommandSource):
         Welcome(source).show_welcome()
@@ -43,17 +49,37 @@ class CommandManager:
         Sync(source).abort()
 
     def register_command(self):
+        permissions = self.config.permission
+
+        def get_permission_checker(literal: str) -> Callable[[CommandSource], bool]:
+            return functools.partial(CommandSource.has_permission, level=permissions.get(literal))
+
+        def get_permission_denied_text():
+            return tr('error.permission_denied').set_color(RColor.red)
+
+        def create_subcommand(literal: str) -> Literal:
+            node = Literal(literal)
+            node.requires(get_permission_checker(literal), get_permission_denied_text)
+            return node
+
         builder = SimpleCommandBuilder()
 
+        # simple commands
         # help
         builder.command('help', self.cmd_help)
         builder.command('help <what>', self.cmd_help)
+
+        builder.arg('what', Text).suggests(lambda: HelpMessage.COMMANDS_WITH_DETAILED_HELP)
+
         # upstream
         builder.command('upstream', lambda src: self.cmd_help(src, {'what': 'upstream'}))
         builder.command('upstream set <server>', self.set_upstream)
         builder.command('upstream list', self.list_upstream)
+
+        builder.arg('server', GreedyText).suggests(lambda: Upstream.server_list)
+
         # sync
-        builder.command('sync', self.cmd_sync)
+        builder.command('update', self.cmd_sync)
 
         # command
         builder.command('confirm', self.confirm)
@@ -64,4 +90,19 @@ class CommandManager:
         )
 
         builder.add_children_for(root)
+
+        # complex commands
+        # update
+        def set_confirm_able(node: AbstractNode):
+            node.then(CountingLiteral('--confirm', 'confirm').redirects(node))
+
+        def make_sync_cmd() -> Literal:
+            node_sc = create_subcommand('update')
+            for node in [node_sc]:
+                set_confirm_able(node)
+                node.runs(self.cmd_sync)
+            return node_sc
+
+        root.then(make_sync_cmd())
+
         self.server.register_command(root)

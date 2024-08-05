@@ -3,6 +3,8 @@ from typing import Optional, List
 
 from mcdreforged.api.all import *
 
+from mirror_world_updater.config.permission_config import PermissionConfig
+
 
 class ServerInfo(Serializable):
     server: str
@@ -10,7 +12,6 @@ class ServerInfo(Serializable):
 
 
 class Config(Serializable):
-    permission: int = PermissionLevel.HELPER
     upstream: str = 'survival'
     upstream_server_path: str = '../survival/server'
     upstream_list: List[ServerInfo] = [
@@ -24,6 +25,7 @@ class Config(Serializable):
     backup_before_sync: bool = True
     ignore_session_lock: bool = True
     prefix: str = '!!sync'
+    permission: PermissionConfig = PermissionConfig()
 
     # func
     @classmethod
