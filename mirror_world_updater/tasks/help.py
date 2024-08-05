@@ -7,12 +7,12 @@ from mirror_world_updater.tasks.task import Task
 from mirror_world_updater.utils.utils import reply_message, tr, mk_cmd
 from mirror_world_updater.utils import utils, help_message_utils
 
-COMMANDS_WITH_DETAILED_HELP = [
-    'upstream'
-]
-
 
 class HelpMessage(Task, ABC):
+    COMMANDS_WITH_DETAILED_HELP = [
+        'upstream'
+    ]
+
     def __init__(self, source: CommandSource):
         super().__init__(source)
 
@@ -34,7 +34,7 @@ class HelpMessage(Task, ABC):
 
     def show_help_message(self, context: CommandContext):
         what = context.get('what')
-        if what is not None and what not in COMMANDS_WITH_DETAILED_HELP:
+        if what is not None and what not in self.COMMANDS_WITH_DETAILED_HELP:
             reply_message(self.source, tr('command.help.no_help', RText(mk_cmd(what), RColor.red)))
         else:
             self.show_help(what)
