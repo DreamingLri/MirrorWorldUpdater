@@ -2,7 +2,9 @@ from mcdreforged.api.all import *
 
 from mirror_world_updater.config.config import Config
 from mirror_world_updater.tasks.help import HelpMessage
+from mirror_world_updater.tasks.sync import Sync
 from mirror_world_updater.tasks.upstream import Upstream
+from mirror_world_updater.tasks.welcome import Welcome
 from mirror_world_updater.utils.utils import reply_message, tr, mk_cmd
 
 
@@ -25,14 +27,20 @@ class CommandManager:
             reply_message(source, RText(tr('command.upstream.no_server'), RColor.red))
         Upstream(source).set_upstream(server_name)
 
-    def list_upstream(self, source: CommandSource, _):
+    def list_upstream(self, source: CommandSource):
         Upstream(source).list_upstream()
 
-    def cmd_sync(self):
-        pass
+    def cmd_sync(self, source: CommandSource):
+        Sync(source).update_world()
 
-    def cmd_welcome(self):
-        pass
+    def cmd_welcome(self, source: CommandSource):
+        Welcome(source).show_welcome()
+
+    def confirm(self, source: CommandSource, _):
+        Sync(source).confirm()
+
+    def abort(self, source: CommandSource):
+        Sync(source).abort()
 
     def register_command(self):
         builder = SimpleCommandBuilder()
@@ -47,10 +55,13 @@ class CommandManager:
         # sync
         builder.command('sync', self.cmd_sync)
 
+        # command
+        builder.command('confirm', self.confirm)
+        builder.command('abort', self.abort)
+
         root = (
             Literal(self.config.prefix).runs(self.cmd_welcome)
         )
 
         builder.add_children_for(root)
         self.server.register_command(root)
-

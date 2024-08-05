@@ -44,6 +44,7 @@ class Sync(Task, ABC):
             + click_and_run(self.tr('abort_hint'), self.tr('abort_hover'), mk_cmd('abort'))
         )
 
+    @new_thread('MWU')
     def _update_world(self) -> None:
         self.reply(self.tr('countdown.intro', self.config.count_down))
         for countdown in range(1, self.config.count_down):
