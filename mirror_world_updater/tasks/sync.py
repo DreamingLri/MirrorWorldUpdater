@@ -1,5 +1,6 @@
 import os
 import shutil
+import threading
 import time
 from abc import ABC
 from datetime import datetime
@@ -8,28 +9,28 @@ from typing import Union
 from mcdreforged.api.all import *
 
 from mirror_world_updater import constants, mcdr_globals
-from mirror_world_updater.tasks.task import Task
+from mirror_world_updater.tasks.__init__ import Task
 from mirror_world_updater.utils.utils import click_and_run, mk_cmd, reply_message, tr
-from prime_backup.mcdr.crontab_job import CrontabJobEvent
-from prime_backup.mcdr.mcdr_entrypoint import crontab_manager, task_manager
-from prime_backup.mcdr.task.backup.create_backup_task import CreateBackupTask
-from prime_backup.mcdr.task_manager import TaskManager
 
 abort_sync = False
 sync_requested = False
 
 
 class Sync(Task, ABC):
+
     def __init__(self, source: CommandSource):
         super().__init__(source)
+        self.condition = threading.Condition()
+        self.backup_done = False
 
+    @property
     def id(self) -> str:
         return 'sync'
 
     def reply(self, msg: Union[str, RTextBase], *, with_prefix: bool = False):
         super().reply(msg, with_prefix=with_prefix)
 
-    def update_world(self) -> None:
+    def update_world(self, needs_confirm: bool = True) -> None:
         if not self.__check_paths():
             return
 
@@ -37,60 +38,85 @@ class Sync(Task, ABC):
         abort_sync = False
         sync_requested = True
 
+        if not needs_confirm:
+            self.confirm()
+
         self.reply(RText(self.tr('echo'), RColor.gold))
         self.reply(
-            click_and_run(self.tr('confirm_hint'), self.tr('confirm_hover'), mk_cmd('confirm'))
+            click_and_run(self.tr('confirm_hint', mk_cmd('confirm')), self.tr('confirm_hover'), mk_cmd('confirm'))
             + ', '
-            + click_and_run(self.tr('abort_hint'), self.tr('abort_hover'), mk_cmd('abort'))
+            + click_and_run(self.tr('abort_hint', mk_cmd('abort')), self.tr('abort_hover'), mk_cmd('abort'))
         )
 
     @new_thread('MWU')
     def _update_world(self) -> None:
-        self.reply(self.tr('countdown.intro', self.config.count_down))
-        for countdown in range(1, self.config.count_down):
-            self.broadcast(
-                click_and_run(self.tr('countdown.text', self.config.count_down - countdown),
-                              self.tr('countdown.hover'),
-                              mk_cmd('abort'))
-            )
-            for i in range(10):
-                time.sleep(0.1)
-                global abort_sync
-                if abort_sync:
-                    self.reply(self.tr('aborted'))
-                    return
+        with self.condition:
+            while not self.backup_done:
+                self.server.logger.info('Waiting for update...')
+                self.condition.wait()
+            self.reply(self.tr('countdown.intro', self.config.count_down))
+            for countdown in range(1, self.config.count_down):
+                self.broadcast(
+                    click_and_run(self.tr('countdown.text', self.config.count_down - countdown),
+                                  self.tr('countdown.hover'),
+                                  mk_cmd('abort'))
+                )
+                for i in range(10):
+                    time.sleep(0.1)
+                    global abort_sync
+                    if abort_sync:
+                        self.reply(self.tr('aborted'))
+                        return
 
-        self.server.stop()
-        self.server.logger.info('Wait for server to stop')
-        self.server.wait_for_start()
+            self.server.stop()
+            self.server.logger.info('Wait for server to stop')
+            self.server.wait_for_start()
+
+            self.server.logger.info('Deleting world')
+            self.remove_worlds(self.config.get().self_server_path)
+
+            self.server.logger.info('Copying {} worlds to the server'.format(self.config.get().upstream))
+
+            self.copy_worlds(self.config.get().upstream_server_path, self.config.get().self_server_path)
+            self.server.logger.info('Sync done, starting the server')
+            self.server.start()
+
+            self.backup_done = False
+
+    def backup_before_sync(self):
+        from prime_backup.mcdr.crontab_job import CrontabJobEvent
+        from prime_backup.mcdr.mcdr_entrypoint import crontab_manager, task_manager
+        from prime_backup.mcdr.task.backup.create_backup_task import CreateBackupTask
 
         def callback(_, err):
-            if err is None:
-                crontab_manager.send_event(CrontabJobEvent.manual_backup_created)
+            with self.condition:
+                if err is None:
+                    crontab_manager.send_event(CrontabJobEvent.manual_backup_created)
+                self.backup_done = True
+                self.condition.notify()
 
-        if self.config.get().backup_before_sync:
-            if constants.PB_ID in self.server.get_plugin_list():
-                self.server.logger.info('Backup before sync')
-                comment: str = 'backup before sync' + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                task_manager.add_task(CreateBackupTask(self.source, comment), callback)
-            else:
-                self.server.logger.warning('Backup is enabled but {} is not loaded'.format(constants.PB_ID))
-
-        self.server.logger.info('Deleting world')
-        self.remove_worlds(self.config.get().upstream_server_path)
-
-        self.server.logger.info('Copying {} worlds to the qmirror server'.format(self.config.get().upstream))
-
-        self.copy_worlds(self.config.get().upstream_server_path, self.config.get().self_server_path)
-        self.server.logger.info('Sync done, starting the server')
-        self.server.start()
+        with self.condition:
+            if self.config.get().backup_before_sync:
+                if constants.PB_ID in self.server.get_plugin_list():
+                    self.server.logger.info('Backup before sync')
+                    comment: str = 'backup before sync' + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    task_manager.add_task(CreateBackupTask(self.source, comment), callback)
+                else:
+                    self.server.logger.warning('Backup is enabled but {} is not loaded'.format(constants.PB_ID))
 
     def confirm(self) -> None:
         global sync_requested
         if not sync_requested:
             reply_message(self.source, tr('command.confirm.no_confirm'))
         else:
-            self._update_world()
+            update_world = threading.Thread(target=self.backup_before_sync)
+            sync_world = threading.Thread(target=self._update_world)
+
+            update_world.start()
+            sync_world.start()
+
+            update_world.join()
+            sync_world.join()
             sync_requested = False
 
     def abort(self) -> None:
@@ -174,4 +200,3 @@ class Sync(Task, ABC):
             else:
                 self.server.logger.warning('{} does not exist while copying ({} -> {})'
                                            .format(src_path, src_path, dst_path))
-
