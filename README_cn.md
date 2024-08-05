@@ -60,7 +60,7 @@ Spigot 服务端: `['world', 'world_nether', 'world_the_end']`
 
 执行 `!!sync confirm` 后的倒数时间
 
-### `backup`
+### `backup_before_sync`
 
 默认值: `true`
 

@@ -58,7 +58,7 @@ Default value: `10`
 
 The countdown after executing `!!sync confirm`
 
-### `backup`
+### `backup_before_sync`
 
 Default value: `true`
 
