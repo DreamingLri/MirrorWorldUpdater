@@ -3,19 +3,20 @@ from typing import Optional, Union
 
 from mcdreforged.api.all import *
 
-from mirror_world_updater.tasks.task import Task
+from mirror_world_updater.tasks.__init__ import Task
 from mirror_world_updater.utils.utils import reply_message, tr, mk_cmd
-from mirror_world_updater.utils import utils, help_message_utils
+from mirror_world_updater.utils import help_message_utils
 
 
 class HelpMessage(Task, ABC):
     COMMANDS_WITH_DETAILED_HELP = [
-        'upstream'
+        'upstream', 'update'
     ]
 
     def __init__(self, source: CommandSource):
         super().__init__(source)
 
+    @property
     def id(self) -> str:
         return 'help'
 
@@ -27,6 +28,9 @@ class HelpMessage(Task, ABC):
             if hide_for_permission and h.is_help() and not self.source.has_permission(h.permission):
                 continue
             self.reply(h.text)
+
+    def __has_permission(self, literal: str) -> bool:
+        return self.source.has_permission(self.config.permission.get(literal))
 
     @property
     def __cmd_prefix(self) -> str:
@@ -45,8 +49,21 @@ class HelpMessage(Task, ABC):
                 self.reply(self.tr('commands.title').set_color(RColor.light_purple))
                 self.__reply_help(self.tr('commands.content', prefix=self.__cmd_prefix), True)
 
-            elif what == 'upstream':
-                self.reply(self.tr('node_help.title').set_color(RColor.light_purple))
-                self.__reply_help(self.tr("node_help.upstream", prefix=self.__cmd_prefix), True)
+            elif what in self.COMMANDS_WITH_DETAILED_HELP:
+                if not self.__has_permission(what):
+                    self.reply_tr('permission_denied', RText(what, RColor.gray))
+                    return
+
+                kwargs = {'prefix': self.__cmd_prefix}
+                # if what == 'upstream':
+                #     self.reply(self.tr('node_help.title').set_color(RColor.light_purple))
+                #     self.__reply_help(self.tr("node_help.upstream", prefix=self.__cmd_prefix), True)
+                #
+                # elif what == 'update':
+                #     self.reply(self.tr('node_help.title').set_color(RColor.light_purple))
+                #     self.__reply_help(self.tr("node_help.update", prefix=self.__cmd_prefix), True)
+
+                self.__reply_help(self.tr(f'node_help.{what}', **kwargs))
+
             else:
                 raise ValueError(what)
