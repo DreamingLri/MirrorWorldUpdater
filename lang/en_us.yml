@@ -4,3 +4,34 @@ mirror_world_updater:
       no_help: No detailed help message for command {}
 
   task:
+    help:
+      commands:
+        title: '[Commands Usages]'
+        content: |-
+          §7{prefix}§r: Display the welcome page
+          §7{prefix} help §e[<what>]§r: Display help message of all / given command
+          §7{prefix} update §r: Sync world file from server
+          §7{prefix} upstream [...]§r: List servers and their backups. See §7{prefix} help upstream§r for detailed help
+
+      node_help:
+        title: '[Detailed Usages]'
+        upstream: |-
+          §7{prefix} upstream list §r: List all upstream servers
+          §7{prefix} upstream §e<server>§r: Set upstream server to §7<server>§r
+
+    upstream:
+      commands:
+        content: |-
+          
+
+    sync:
+
+    welcome:
+      title: '{name} {version}'
+      common_commands: '[Common Commands]'
+      common_commands.hover: 'Enter command {} to see the full command list'
+
+  text_component:
+    command:
+      run: 'Click to run {}'
+      suggest: 'Click to complete {}'
