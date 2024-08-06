@@ -34,13 +34,23 @@ class Welcome(Task, ABC):
 
         self.reply(
             self.tr('common_commands').
-            set_color(RColor.light_purple).
+            set_color(RColor.dark_aqua).
             h(self.tr('common_commands.hover', TextComponent.command('help'))).
             c(RAction.suggest_command, mk_cmd('help'))
         )
         helps = self.__generate_command_helps()
         for cmd in self.COMMON_COMMANDS:
             self.reply(helps[cmd])
+
+        self.reply(self.tr('quick_actions.title').set_color(RColor.dark_aqua))
+        with self.source.preferred_language_context():
+            buttons = [
+                RTextList('[', self.tr('quick_actions.update'), ']').
+                set_color(RColor.green).
+                h(TextComponent.command('update')).
+                c(RAction.suggest_command, mk_cmd('update --confirm'))
+            ]
+        self.reply(RTextBase.join(' ', buttons))
 
     def __generate_command_helps(self) -> Dict[str, RTextBase]:
         msg = HelpMessage(self.source).tr('commands.content', prefix=self.__cmd_prefix)

@@ -22,20 +22,20 @@ mirror_world_updater:
       node_help:
         title: '[详细帮助]'
         upstream: |-
-          §d[upstream 命令帮助]§r
+          §3[upstream 命令帮助]§r
           设置同步服务器
-          §d【指令帮助】§r
+          §3【指令帮助】§r
           §7{prefix} upstream list §r: 展示目标服务器列表
           §7{prefix} upstream set §e<server>§r: 设置目标服务器为 §7<server>§r
-          §d[参数帮助]§r
+          §3[参数帮助]§r
           §3<server>§r: 你想要同步的服务器
 
         update: |-
-          §d[update 命令帮助]§r
+          §3[update 命令帮助]§r
           从目标服务器同步世界
-          §d【指令帮助】§r
+          §3【指令帮助】§r
           §7{prefix} update §7[--flags]§r
-          §d[可选参数]§r
+          §3[可选参数]§r
           §7--confirm§r: 跳过确认步骤直接同步
           §7--ignore§r: 忽略在ignore_files列表中的文件
 
@@ -44,13 +44,14 @@ mirror_world_updater:
       current_upstream: 当前目标服务器是 {name}, 文件路径为 {path}
       no_upstream: 在目标服务器列表中没有 {} 服务器
       set_success: 已成功设置目标服务器为 {}
-      list_upstream: 服务器名称 {name}, 地址 {path}
+      list_upstream: 服务器 {name}, 地址 {path}
+      set_upstream: 点击以添加目标服务器
 
     sync:
       echo: 开始同步世界
-      confirm_hint: 使用 {} confirm 命令来确认同步
+      confirm_hint: '[确认]'
       confirm_hover: 点击以确认同步
-      abort_hint: 使用 {} abort 命令来取消同步
+      abort_hint: '[取消]'
       abort_hover: 点击以取消同步
       abort: 取消同步
       aborted: 同步已取消!
@@ -66,6 +67,9 @@ mirror_world_updater:
       title: '{name} {version}'
       common_commands: '[命令帮助]'
       common_commands.hover: '输入命令 {} 来查看详细命令帮助'
+      quick_actions:
+        title: '[快捷操作]'
+        update: '同步世界'
 
   text_component:
     command:

@@ -77,10 +77,13 @@ class Sync(Task, ABC):
             self.confirm()
 
         self.reply(RText(self.tr('echo'), RColor.gold))
+        self.reply(tr("task.upstream.current_upstream",
+                      name=RText(self.config.get().upstream, RColor.dark_aqua),
+                      path=RText(self.config.get().upstream_server_path, RColor.gray)))
         self.reply(
-            click_and_run(self.tr('confirm_hint', mk_cmd('confirm')), self.tr('confirm_hover'), mk_cmd('confirm'))
-            + ', '
-            + click_and_run(self.tr('abort_hint', mk_cmd('abort')), self.tr('abort_hover'), mk_cmd('abort'))
+            click_and_run(RText(self.tr('confirm_hint'), RColor.green), self.tr('confirm_hover'), mk_cmd('confirm'))
+            + '  '
+            + click_and_run(RText(self.tr('abort_hint'), RColor.red), self.tr('abort_hover'), mk_cmd('abort'))
         )
 
     @new_thread('MWU')
@@ -92,14 +95,11 @@ class Sync(Task, ABC):
             self.reply(self.tr('countdown.intro', self.config.count_down))
             for countdown in range(1, self.config.count_down):
                 self.broadcast(
-                    # click_and_run(self.tr('countdown.text', self.config.count_down - countdown),
-                    #               self.tr('countdown.hover'),
-                    #               mk_cmd('abort'))
                     click_and_run(
                         RText('!!! ', RColor.red) + self.tr('countdown.text', countdown),
                         self.tr('countdown.hover', TextComponent.command('abort')),
                         mk_cmd('abort'),
-                ))
+                    ))
                 for i in range(10):
                     time.sleep(0.1)
                     global abort_sync
@@ -240,6 +240,7 @@ class Sync(Task, ABC):
                     def filter_ignore(path, files):
                         return [file for file in files if
                                 file == 'session.lock' and self.config.get().ignore_session_lock]
+
                     shutil.copytree(src_path, dst_path, dirs_exist_ok=True, ignore=filter_ignore)
 
             elif os.path.isfile(src_path):

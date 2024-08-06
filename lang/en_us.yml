@@ -22,20 +22,20 @@ mirror_world_updater:
       node_help:
         title: '[Detailed Usages]'
         upstream: |-
-          §d[upstream Command Usage]§r
+          §3[upstream Command Usage]§r
           Set upstream server
-          §d[Usages]§r
+          §3[Usages]§r
           §7{prefix} upstream list §r: List all upstream servers
           §7{prefix} upstream set §e<server>§r: Set upstream server to §7<server>§r
-          §d[Arguments]§r
+          §3[Arguments]§r
           §3<server>§r: The upstream server name you want to set
           
         update: |-
-          §d[update Command Usage]§r
+          §3[update Command Usage]§r
           Sync World from upstream server
-          §d[Usages]§r
+          §3[Usages]§r
           §7{prefix} update §7[--flags]§r
-          §d[Optional flags]§r
+          §3[Optional flags]§r
           §7--confirm§r: Skip the confirm step and start the sync directly
           §7--ignore§r: let the files or dirs in ignore_files(in config) can be ignored
 
@@ -44,13 +44,14 @@ mirror_world_updater:
       current_upstream: 'Current Upstream: {name}, Path: {path}'
       no_upstream: No upstream name {} in upstream_list
       set_success: Set Upstream to Server {} Successfully
-      list_upstream: 'Server Name: {name}, Path: {path}'
+      list_upstream: 'Server: {name}, Path: {path}'
+      set_upstream: Click to add upstream
 
     sync:
       echo: Start to sync worlds
-      confirm_hint: Use {} to confirm sync
+      confirm_hint: '[Confirm]'
       confirm_hover: Click to confirm
-      abort_hint: Use {} to abort sync
+      abort_hint: '[Abort]'
       abort_hover: Click to abort
       abort: Aborting sync
       aborted: Sync aborted!
@@ -66,6 +67,9 @@ mirror_world_updater:
       title: '{name} {version}'
       common_commands: '[Common Commands]'
       common_commands.hover: 'Enter command {} to see the full command list'
+      quick_actions:
+        title: '[Quick Actions]'
+        update: 'Sync the world'
 
   text_component:
     command:

@@ -46,7 +46,7 @@ class HelpMessage(Task, ABC):
     def show_help(self, what: Optional[str] = None):
         with self.source.preferred_language_context():
             if what is None:
-                self.reply(self.tr('commands.title').set_color(RColor.light_purple))
+                self.reply(self.tr('commands.title').set_color(RColor.dark_aqua))
                 self.__reply_help(self.tr('commands.content', prefix=self.__cmd_prefix), True)
 
             elif what in self.COMMANDS_WITH_DETAILED_HELP:

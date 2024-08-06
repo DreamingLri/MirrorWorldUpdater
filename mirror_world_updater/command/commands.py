@@ -27,9 +27,7 @@ class CommandManager:
         HelpMessage(source).show_help(what)
 
     def set_upstream(self, source: CommandSource, context: CommandContext):
-        server_name = context['server']
-        if server_name is None:
-            reply_message(source, RText(tr('command.upstream.no_server'), RColor.red))
+        server_name = context.get('server')
         Upstream(source).set_upstream(server_name)
 
     def list_upstream(self, source: CommandSource):
@@ -74,6 +72,7 @@ class CommandManager:
 
         # upstream
         builder.command('upstream', lambda src: self.cmd_help(src, {'what': 'upstream'}))
+        builder.command('upstream set', self.set_upstream)
         builder.command('upstream set <server>', self.set_upstream)
         builder.command('upstream list', self.list_upstream)
 
