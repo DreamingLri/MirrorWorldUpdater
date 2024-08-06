@@ -4,11 +4,11 @@ import threading
 import time
 from abc import ABC
 from datetime import datetime
-from typing import Union
+from typing import Union, List
 
 from mcdreforged.api.all import *
 
-from mirror_world_updater import constants, mcdr_globals
+from mirror_world_updater import constants
 from mirror_world_updater.tasks.__init__ import Task
 from mirror_world_updater.utils.utils import click_and_run, mk_cmd, reply_message, tr
 
@@ -16,10 +16,42 @@ abort_sync = False
 sync_requested = False
 
 
+def ignore_remove(path: str, ignore_files: List[str]):
+    exclude_items = ignore_files or []
+    for root, dirs, files in os.walk(path, topdown=False):
+        # 删除文件
+        for file in files:
+            file_path = os.path.join(root, file)
+            if os.path.basename(file_path) not in exclude_items:
+                os.remove(file_path)
+
+        # 删除文件夹
+        for _dir in dirs:
+            dir_path = os.path.join(root, _dir)
+            if os.path.basename(dir_path) not in exclude_items:
+                shutil.rmtree(dir_path, ignore_errors=True)
+
+
+def ignore_copy(src_path: str, dst_path: str, ignore_files: List[str]):
+    exclude_items = ignore_files or []
+
+    def ignore_items(path, items):
+        relative_dir: str = os.path.relpath(path, src_path)
+        ignored = []
+        for item in items:
+            item_path = os.path.join(relative_dir, item)
+            if item in exclude_items or item_path in exclude_items:
+                ignored.append(item)
+        return ignored
+
+    shutil.copytree(src_path, dst_path, ignore=ignore_items, dirs_exist_ok=True)
+
+
 class Sync(Task, ABC):
 
     def __init__(self, source: CommandSource):
         super().__init__(source)
+        self.ignore_file = False
         self.condition = threading.Condition()
         self.backup_done = False
 
@@ -30,7 +62,7 @@ class Sync(Task, ABC):
     def reply(self, msg: Union[str, RTextBase], *, with_prefix: bool = False):
         super().reply(msg, with_prefix=with_prefix)
 
-    def update_world(self, needs_confirm: bool = True) -> None:
+    def update_world(self, needs_confirm: bool = True, ignore_file: bool = False) -> None:
         if not self.__check_paths():
             return
 
@@ -38,6 +70,8 @@ class Sync(Task, ABC):
         abort_sync = False
         sync_requested = True
 
+        if ignore_file | self.config.get().sync_ignore_files:
+            self.ignore_file = True
         if not needs_confirm:
             self.confirm()
 
@@ -162,7 +196,12 @@ class Sync(Task, ABC):
                     os.path.join(os.path.dirname(target_path), link_path))
 
             if os.path.isdir(target_path):
-                shutil.rmtree(target_path)
+                if self.ignore_file:
+
+                    ignore_files = self.config.get().ignore_files
+                    ignore_remove(target_path, ignore_files)
+                else:
+                    shutil.rmtree(target_path)
             elif os.path.isfile(target_path):
                 os.remove(target_path)
             else:
@@ -186,11 +225,13 @@ class Sync(Task, ABC):
 
             self.server.logger.info('copying {} -> {}'.format(src_path, dst_path))
 
-            def filter_ignore(path, files):
-                return [file for file in files if file == 'session.lock' and self.config.get().ignore_session_lock]
-
             if os.path.isdir(src_path):
-                shutil.copytree(src_path, dst_path, ignore=filter_ignore)
+
+                if self.ignore_file:
+                    ignore_files = self.config.get().ignore_files
+                    ignore_copy(src_path, dst_path, ignore_files)
+                else:
+                    shutil.copytree(src_path, dst_path, dirs_exist_ok=True)
 
             elif os.path.isfile(src_path):
                 dst_dir = os.path.dirname(dst_path)

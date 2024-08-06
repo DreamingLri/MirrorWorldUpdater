@@ -23,9 +23,13 @@ class Config(Serializable):
     world_names: List[str] = ['world']
     count_down: int = 10
     backup_before_sync: bool = True
-    ignore_session_lock: bool = True
     prefix: str = '!!sync'
     permission: PermissionConfig = PermissionConfig()
+    sync_ignore_files: bool = False
+    ignore_files: List[str] = [
+        'session.lock',
+        'carpet.conf'
+    ]
 
     # func
     @classmethod
