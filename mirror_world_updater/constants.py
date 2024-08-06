@@ -1,5 +1,4 @@
 import uuid
-from mcdreforged.plugin.plugin_event import LiteralEvent
 
 INSTANCE_ID = uuid.uuid4().hex[:4]
 PLUGIN_ID = 'mirror_world_updater'
