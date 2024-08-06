@@ -25,10 +25,9 @@ class Config(Serializable):
     backup_before_sync: bool = True
     prefix: str = '!!sync'
     permission: PermissionConfig = PermissionConfig()
-    sync_ignore_files: bool = True
     ignore_session_lock: bool = True
+    sync_ignore_files: bool = False
     ignore_files: List[str] = [
-
     ]
 
     # func
