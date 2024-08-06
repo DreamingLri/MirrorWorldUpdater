@@ -1,6 +1,6 @@
 {
 	"id": "mirror_world_updater",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"name": "MirrorWorldUpdater",
 	"description": {
 		"en_us": "Use Prime Backup to sync world files in mirror server",
