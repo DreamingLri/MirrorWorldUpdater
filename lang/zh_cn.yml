@@ -33,7 +33,7 @@ mirror_world_updater:
         update: |-
           §3[update 命令帮助]§r
           从目标服务器同步世界
-          §3【指令帮助】§r
+          §3[指令帮助]§r
           §7{prefix} update §7[--flags]§r
           §3[可选参数]§r
           §7--confirm§r: 跳过确认步骤直接同步
