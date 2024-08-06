@@ -6,34 +6,46 @@
 
 A plugin to sync any server world to the mirror server
 
+## Dependencies
+
+`mcdreforged >= 2.0.0`
+`prime_backup >=1.7.4`
+
 ## Configure
 
 Configure file: `config/mirror_world_updater/config.json`
 
-### `permission_level`
+### `permissions`
 
-Default value: `2`
+Default value:
+```
+root: int = 0
+upstream: int = 1
+update: int = 1
+abort: int = 1
+confirm: int = 1
+```
 
 The minimum permission level to use the command
 
 ### `upstream_list`
 
 Default value:
-```json
+```
 "upstream_list": [
-        {
-            "server": "survival",
-            "server_path": "../survival1.21/server"
-        },
-        {
-            "server": "mirror",
-            "server_path": "../mirror/server"
-        },
-        {
-            "server": "creative",
-            "server_path": "../creative/server"
-        }
-    ]
+    {
+        "server": "survival",
+        "server_path": "../survival/server"
+    },
+    {
+        "server": "mirror",
+        "server_path": "../mirror/server"
+    },
+    {
+        "server": "creative",
+        "server_path": "../creative/server"
+    }
+]
 ```
 
 ### `self_server_path`
@@ -64,11 +76,15 @@ Default value: `true`
 
 Use [Prime Backup](https://github.com/TISUnion/PrimeBackup) to back up mirror server world before sync
 
-
-
 ### `ignore_session_lock`
 
 If enabled, `session.lock` file will be ignored when copying the world
+
+### `sync_ignore_files`
+
+Default value: `false`
+
+If enabled, the files or dirs in list will be ignored when copying the world
 
 ## Commands
 

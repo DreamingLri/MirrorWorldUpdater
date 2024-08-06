@@ -6,6 +6,11 @@
 
 一个用来同步任何服务器世界到目标服务器的插件
 
+## 依赖需求
+
+`mcdreforged >= 2.0.0`
+`prime_backup >=1.7.4`
+
 ## 配置
 
 配置文件: `config/mirror_world_updater/config.json`
@@ -66,13 +71,17 @@ Spigot 服务端: `['world', 'world_nether', 'world_the_end']`
 
 使用 [Prime Backup](https://github.com/TISUnion/PrimeBackup) 插件在你同步世界前进行备份，~~防小天才误操作~~
 
-
-
 ### `ignore_session_lock`
 
 默认值: `true`
 
 如果启用，拷贝世界时将忽略 `session.lock` 文件
+
+### `sync_ignore_files`
+
+默认值: `false`
+
+如果启用，拷贝世界时将忽略位于`ignore_files`这些文件夹和文件
 
 ## 命令
 
