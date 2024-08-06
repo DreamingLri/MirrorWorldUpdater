@@ -96,7 +96,7 @@ class Sync(Task, ABC):
                     #               self.tr('countdown.hover'),
                     #               mk_cmd('abort'))
                     click_and_run(
-                        RText('!!! ', RColor.red) + self.tr('countdown', countdown),
+                        RText('!!! ', RColor.red) + self.tr('countdown.text', countdown),
                         self.tr('countdown.hover', TextComponent.command('abort')),
                         mk_cmd('abort'),
                 ))
@@ -202,7 +202,6 @@ class Sync(Task, ABC):
 
             if os.path.isdir(target_path):
                 if self.ignore_file:
-
                     ignore_files = self.config.get().ignore_files
                     ignore_remove(target_path, ignore_files)
                 else:
@@ -234,9 +233,14 @@ class Sync(Task, ABC):
 
                 if self.ignore_file:
                     ignore_files = self.config.get().ignore_files
+                    if self.config.get().ignore_session_lock:
+                        ignore_files.append('session.lock')
                     ignore_copy(src_path, dst_path, ignore_files)
                 else:
-                    shutil.copytree(src_path, dst_path, dirs_exist_ok=True)
+                    def filter_ignore(path, files):
+                        return [file for file in files if
+                                file == 'session.lock' and self.config.get().ignore_session_lock]
+                    shutil.copytree(src_path, dst_path, dirs_exist_ok=True, ignore=filter_ignore)
 
             elif os.path.isfile(src_path):
                 dst_dir = os.path.dirname(dst_path)
