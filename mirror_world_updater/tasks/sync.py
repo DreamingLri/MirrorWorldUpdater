@@ -10,6 +10,7 @@ from mcdreforged.api.all import *
 
 from mirror_world_updater import constants
 from mirror_world_updater.tasks.__init__ import Task
+from mirror_world_updater.text_component import TextComponent
 from mirror_world_updater.utils.utils import click_and_run, mk_cmd, reply_message, tr
 
 abort_sync = False
@@ -91,10 +92,14 @@ class Sync(Task, ABC):
             self.reply(self.tr('countdown.intro', self.config.count_down))
             for countdown in range(1, self.config.count_down):
                 self.broadcast(
-                    click_and_run(self.tr('countdown.text', self.config.count_down - countdown),
-                                  self.tr('countdown.hover'),
-                                  mk_cmd('abort'))
-                )
+                    # click_and_run(self.tr('countdown.text', self.config.count_down - countdown),
+                    #               self.tr('countdown.hover'),
+                    #               mk_cmd('abort'))
+                    click_and_run(
+                        RText('!!! ', RColor.red) + self.tr('countdown', countdown),
+                        self.tr('countdown.hover', TextComponent.command('abort')),
+                        mk_cmd('abort'),
+                ))
                 for i in range(10):
                     time.sleep(0.1)
                     global abort_sync
