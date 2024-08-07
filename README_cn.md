@@ -9,6 +9,7 @@
 ## 依赖需求
 
 `mcdreforged >= 2.0.0`
+
 `prime_backup >=1.7.4`
 
 ## 配置
@@ -17,18 +18,25 @@
 
 ### `permission_level`
 
-默认值: `2`
+默认值:
+```
+root: int = 0
+upstream: int = 1
+update: int = 1
+abort: int = 1
+confirm: int = 1
+```
 
 使用命令的最低权限等级
 
 ### `upstream_list`
 
 默认值:
-```json
+```
 "upstream_list": [
         {
             "server": "survival",
-            "server_path": "../survival1.21/server"
+            "server_path": "../survival/server"
         },
         {
             "server": "mirror",
@@ -80,6 +88,16 @@ Spigot 服务端: `['world', 'world_nether', 'world_the_end']`
 ### `sync_ignore_files`
 
 默认值: `false`
+
+举例:
+
+对于Carpet服务器，你也许并不想同步你的carpet设置，只需要将`carpet.conf`这个文件添加到列表中，就能避免同步:
+```
+"ignore_files": [
+    "carpet.conf"
+]
+```
+
 
 如果启用，拷贝世界时将忽略位于`ignore_files`这些文件夹和文件
 

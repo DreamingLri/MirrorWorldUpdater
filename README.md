@@ -9,6 +9,7 @@ A plugin to sync any server world to the mirror server
 ## Dependencies
 
 `mcdreforged >= 2.0.0`
+
 `prime_backup >=1.7.4`
 
 ## Configure
@@ -48,6 +49,8 @@ Default value:
 ]
 ```
 
+The paths of servers you want to sync
+
 ### `self_server_path`
 
 Default value: `./server`
@@ -83,6 +86,15 @@ If enabled, `session.lock` file will be ignored when copying the world
 ### `sync_ignore_files`
 
 Default value: `false`
+
+Example:
+
+For Carpet server, you may not want to sync your carpet settings to mirror server, just put `carpet.conf` into the list like this:
+```
+"ignore_files": [
+    "carpet.conf"
+]
+```
 
 If enabled, the files or dirs in list will be ignored when copying the world
 
