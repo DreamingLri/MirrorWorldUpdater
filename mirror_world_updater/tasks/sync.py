@@ -93,7 +93,7 @@ class Sync(Task, ABC):
                 self.server.logger.info('Waiting for update...')
                 self.condition.wait()
             self.reply(self.tr('countdown.intro', self.config.count_down))
-            for countdown in range(1, self.config.count_down):
+            for countdown in range(1, self.config.count_down, -1):
                 self.broadcast(
                     click_and_run(
                         RText('!!! ', RColor.red) + self.tr('countdown.text', countdown),
