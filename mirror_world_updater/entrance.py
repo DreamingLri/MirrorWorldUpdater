@@ -27,7 +27,7 @@ def on_load(server: PluginServerInterface, old):
 
 
 def on_player_joined(server: PluginServerInterface, player: str, info: Info):
-    server.tell(player, tr("task.welcome.simple_welcome") + " " +
+    server.tell(player,
                 click_and_run(
                     RText("[" + tr("task.welcome.quick_actions.update") + "]", RColor.green),
                     tr("task.welcome.simple_sync"),
