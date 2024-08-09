@@ -16,6 +16,9 @@
 
 配置文件: `config/mirror_world_updater/config.json`
 
+> [!IMPORTANT]
+> 修改 `config.json` 之后, 你需要使用 `!!MCDR plugin reload mirror_world_updater` 来确保配置文件生效
+
 ### `permission_level`
 
 默认值:

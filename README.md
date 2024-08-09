@@ -16,6 +16,9 @@ A plugin to sync any server world to the mirror server
 
 Configure file: `config/mirror_world_updater/config.json`
 
+> [!IMPORTANT]
+> After edit the `config.json` file, you need to use `!!MCDR plugin reload mirror_world_updater` to confirm configure.
+
 ### `permissions`
 
 Default value:
