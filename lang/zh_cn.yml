@@ -70,6 +70,8 @@ mirror_world_updater:
       quick_actions:
         title: '[快捷操作]'
         update: '同步世界'
+      simple_welcome: '欢迎来到镜像服!'
+      simple_sync: '点击以同步!'
 
   text_component:
     command:

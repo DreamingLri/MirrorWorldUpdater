@@ -70,6 +70,8 @@ mirror_world_updater:
       quick_actions:
         title: '[Quick Actions]'
         update: 'Sync the world'
+      simple_welcome: 'Welcome to Mirror Server!'
+      simple_sync: 'Click to sync!'
 
   text_component:
     command:
