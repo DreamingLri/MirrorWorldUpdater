@@ -78,6 +78,7 @@ class Sync(Task, ABC):
             self.backup = False
         if not needs_confirm:
             self.confirm()
+            return
 
         self.reply(RText(self.tr('echo'), RColor.gold))
         self.reply(tr("task.upstream.current_upstream",
@@ -151,16 +152,14 @@ class Sync(Task, ABC):
         if not sync_requested:
             reply_message(self.source, tr('command.confirm.no_confirm'))
         else:
-
+            sync_world = threading.Thread(target=self._update_world)
             update_world = threading.Thread(target=self.backup_before_sync)
             if not self.backup:
-                update_world.start()
+                sync_world.start()
                 sync_requested = False
-                update_world.join()
+                sync_world.join()
                 self.backup = True
                 return
-
-            sync_world = threading.Thread(target=self._update_world)
 
             update_world.start()
             sync_world.start()
