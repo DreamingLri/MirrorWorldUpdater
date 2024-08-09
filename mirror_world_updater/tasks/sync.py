@@ -52,6 +52,7 @@ class Sync(Task, ABC):
 
     def __init__(self, source: CommandSource):
         super().__init__(source)
+        self.backup = True
         self.ignore_file = False
         self.condition = threading.Condition()
         self.backup_done = False
@@ -63,7 +64,7 @@ class Sync(Task, ABC):
     def reply(self, msg: Union[str, RTextBase], *, with_prefix: bool = False):
         super().reply(msg, with_prefix=with_prefix)
 
-    def update_world(self, needs_confirm: bool = True, ignore_file: bool = False) -> None:
+    def update_world(self, needs_confirm: bool = True, ignore_file: bool = False, backup: bool = True) -> None:
         if not self.__check_paths():
             return
 
@@ -71,8 +72,10 @@ class Sync(Task, ABC):
         abort_sync = False
         sync_requested = True
 
-        if ignore_file | self.config.get().sync_ignore_files:
+        if ignore_file or self.config.get().sync_ignore_files:
             self.ignore_file = True
+        if not backup or not self.config.get().backup_before_sync:
+            self.backup = False
         if not needs_confirm:
             self.confirm()
 
@@ -148,7 +151,15 @@ class Sync(Task, ABC):
         if not sync_requested:
             reply_message(self.source, tr('command.confirm.no_confirm'))
         else:
+
             update_world = threading.Thread(target=self.backup_before_sync)
+            if not self.backup:
+                update_world.start()
+                sync_requested = False
+                update_world.join()
+                self.backup = True
+                return
+
             sync_world = threading.Thread(target=self._update_world)
 
             update_world.start()

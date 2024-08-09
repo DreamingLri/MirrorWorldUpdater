@@ -36,7 +36,8 @@ class CommandManager:
     def cmd_sync(self, source: CommandSource, context: CommandContext):
         needs_confirm = context.get('confirm', 0) == 0
         ignore_file = context.get('ignore', 0) == 1
-        Sync(source).update_world(needs_confirm=needs_confirm, ignore_file=ignore_file)
+        backup = context.get('no-backup', 0) == 0
+        Sync(source).update_world(needs_confirm=needs_confirm, ignore_file=ignore_file, backup=backup)
 
     def cmd_welcome(self, source: CommandSource):
         Welcome(source).show_welcome()
@@ -99,11 +100,15 @@ class CommandManager:
         def set_ignore_files(node: AbstractNode):
             node.then(CountingLiteral('--ignore', 'ignore').redirects(node))
 
+        def set_backup(node: AbstractNode):
+            node.then(CountingLiteral('--no-backup', 'no-backup').redirects(node))
+
         def make_sync_cmd() -> Literal:
             node_sc = create_subcommand('update')
             for node in [node_sc]:
                 set_confirm_able(node)
                 set_ignore_files(node)
+                set_backup(node)
                 node.runs(self.cmd_sync)
             return node_sc
 
