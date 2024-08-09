@@ -94,10 +94,12 @@ class Sync(Task, ABC):
     def _update_world(self) -> None:
         with self.condition:
             while not self.backup_done:
+                if not self.backup:
+                    break
                 self.server.logger.info('Waiting for update...')
                 self.condition.wait()
             self.reply(self.tr('countdown.intro', self.config.count_down))
-            for countdown in range(1, self.config.count_down, -1):
+            for countdown in range(self.config.count_down, 0, -1):
                 self.broadcast(
                     click_and_run(
                         RText('!!! ', RColor.red) + self.tr('countdown.text', countdown),
