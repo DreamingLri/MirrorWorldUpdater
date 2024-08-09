@@ -48,10 +48,4 @@ jobs:
           asset_name: mirror_world_updater.mcdr
           asset_content_type: application/zip
 
-      - uses: actions/checkout@v4
-      - name: Setup python
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.9
-
 
