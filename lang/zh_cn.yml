@@ -38,6 +38,7 @@ mirror_world_updater:
           §3[可选参数]§r
           §7--confirm§r: 跳过确认步骤直接同步
           §7--ignore§r: 忽略在ignore_files列表中的文件
+          §7--no-backup§r: 跳过备份步骤
 
     upstream:
       title: '[目标服务器列表]'

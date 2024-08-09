@@ -38,6 +38,7 @@ mirror_world_updater:
           §3[Optional flags]§r
           §7--confirm§r: Skip the confirm step and start the sync directly
           §7--ignore§r: let the files or dirs in ignore_files(in config) can be ignored
+          §7--no-backup§r: Skip the backup step
 
     upstream:
       title: '[Upstream List]'
