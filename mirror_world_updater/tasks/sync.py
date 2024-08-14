@@ -20,13 +20,11 @@ sync_requested = False
 def ignore_remove(path: str, ignore_files: List[str]):
     exclude_items = ignore_files or []
     for root, dirs, files in os.walk(path, topdown=False):
-        # 删除文件
         for file in files:
             file_path = os.path.join(root, file)
             if os.path.basename(file_path) not in exclude_items:
                 os.remove(file_path)
 
-        # 删除文件夹
         for _dir in dirs:
             dir_path = os.path.join(root, _dir)
             if os.path.basename(dir_path) not in exclude_items:

@@ -7,7 +7,7 @@ from mirror_world_updater.utils.utils import mk_cmd
 class TextComponent:
     @classmethod
     def tr(cls, key, *args, **kwargs):
-        from prime_backup.utils.mcdr_utils import tr
+        from mirror_world_updater.utils.utils import tr
         return tr('text_component.' + key, *args, **kwargs)
 
     @classmethod

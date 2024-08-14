@@ -55,14 +55,6 @@ class HelpMessage(Task, ABC):
                     return
 
                 kwargs = {'prefix': self.__cmd_prefix}
-                # if what == 'upstream':
-                #     self.reply(self.tr('node_help.title').set_color(RColor.light_purple))
-                #     self.__reply_help(self.tr("node_help.upstream", prefix=self.__cmd_prefix), True)
-                #
-                # elif what == 'update':
-                #     self.reply(self.tr('node_help.title').set_color(RColor.light_purple))
-                #     self.__reply_help(self.tr("node_help.update", prefix=self.__cmd_prefix), True)
-
                 self.__reply_help(self.tr(f'node_help.{what}', **kwargs))
 
             else:
