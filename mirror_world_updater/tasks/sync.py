@@ -8,7 +8,7 @@ from typing import Union, List
 
 from mcdreforged.api.all import *
 
-from mirror_world_updater import constants
+from mirror_world_updater import constants, mcdr_globals
 from mirror_world_updater.tasks.__init__ import Task
 from mirror_world_updater.text_component import TextComponent
 from mirror_world_updater.utils.utils import click_and_run, mk_cmd, reply_message, tr
@@ -88,7 +88,7 @@ class Sync(Task, ABC):
             + click_and_run(RText(self.tr('abort_hint'), RColor.red), self.tr('abort_hover'), mk_cmd('abort'))
         )
 
-    @new_thread('MWU')
+    @new_thread(mcdr_globals.metadata.name)
     def _update_world(self) -> None:
         with self.condition:
             while not self.backup_done:

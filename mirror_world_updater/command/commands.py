@@ -5,6 +5,7 @@ from mcdreforged.api.all import *
 
 from mirror_world_updater.config.config import Config
 from mirror_world_updater.tasks.help import HelpMessage
+from mirror_world_updater.tasks.region import Region, RegionFile
 from mirror_world_updater.tasks.sync import Sync
 from mirror_world_updater.tasks.upstream import Upstream
 from mirror_world_updater.tasks.welcome import Welcome
@@ -48,6 +49,30 @@ class CommandManager:
     def abort(self, source: CommandSource):
         Sync(source).abort()
 
+    def add_region(self, source: CommandSource, context: CommandContext):
+        if context is None:
+            Region(source).add_region_here()
+        else:
+            x: int = context.get('x')
+            z: int = context.get('z')
+            dim: int = context.get('dim')
+            Region(source).add_region(RegionFile(x, z, dim))
+
+    def del_region(self, source: CommandSource, context: CommandContext):
+        pass
+
+    def clean_region_list(self, source: CommandSource, context: CommandContext):
+        pass
+
+    def show_region_list(self, source: CommandSource, context: CommandContext):
+        pass
+
+    def show_history(self, source: CommandSource, context: CommandContext):
+        pass
+
+    def region_update(self, source: CommandSource, context: CommandContext):
+        pass
+
     def register_command(self):
         permissions = self.config.permission
 
@@ -79,8 +104,18 @@ class CommandManager:
 
         builder.arg('server', GreedyText).suggests(lambda: Upstream.server_list)
 
-        # sync
-        builder.command('update', self.cmd_sync)
+        # region
+        builder.command('add', self.add_region)
+        builder.command('add [x] [z] [d]', self.add_region)
+        builder.command('del', self.del_region)
+        builder.command('del [x] [z] [d]', self.del_region)
+        builder.command('del-all', self.clean_region_list)
+        builder.command('list', self.show_region_list)
+        builder.command('history', self.show_history)
+
+        builder.arg('x', Integer)
+        builder.arg('z', Integer)
+        builder.arg('d', Integer)
 
         # command
         builder.command('confirm', self.confirm)
@@ -93,7 +128,6 @@ class CommandManager:
         builder.add_children_for(root)
 
         # complex commands
-        # update
         def set_confirm_able(node: AbstractNode):
             node.then(CountingLiteral('--confirm', 'confirm').redirects(node))
 
@@ -103,6 +137,7 @@ class CommandManager:
         def set_backup(node: AbstractNode):
             node.then(CountingLiteral('--no-backup', 'no-backup').redirects(node))
 
+        # update
         def make_sync_cmd() -> Literal:
             node_sc = create_subcommand('update')
             for node in [node_sc]:
@@ -112,6 +147,17 @@ class CommandManager:
                 node.runs(self.cmd_sync)
             return node_sc
 
+        # region update
+        def make_region_update() -> Literal:
+            node_sc = create_subcommand('region update')
+            for node in [node_sc]:
+                set_confirm_able(node)
+                set_ignore_files(node)
+                set_backup(node)
+                node.runs(self.region_update)
+            return node_sc
+
         root.then(make_sync_cmd())
+        root.then(make_region_update())
 
         self.server.register_command(root)

@@ -64,6 +64,14 @@ mirror_world_updater:
         text: '{} second later, the world will §cbe synced§r'
         hover: Click me or enter command {} to abort restore
 
+    region:
+      only_player: 'This command is only supported by players'
+      already_exist: 'The region file {} already exists in the region list'
+      added: 'Region file {} added'
+      not_exist: 'The region file {} does not exist in the region list'
+      deleted: 'Region file {} deleted'
+      cleared: 'Region file list cleared'
+
     welcome:
       title: '{name} {version}'
       common_commands: '[Common Commands]'
