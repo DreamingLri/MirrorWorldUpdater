@@ -2,14 +2,13 @@ import os
 import shutil
 import threading
 import time
-from abc import ABC
 from datetime import datetime
 from typing import Union, List
 
 from mcdreforged.api.all import *
 
 from mirror_world_updater import constants, mcdr_globals
-from mirror_world_updater.tasks.__init__ import Task
+from mirror_world_updater.tasks.update_task import UpdateTask
 from mirror_world_updater.text_component import TextComponent
 from mirror_world_updater.utils.utils import click_and_run, mk_cmd, reply_message, tr
 
@@ -46,7 +45,7 @@ def ignore_copy(src_path: str, dst_path: str, ignore_files: List[str]):
     shutil.copytree(src_path, dst_path, ignore=ignore_items, dirs_exist_ok=True)
 
 
-class Sync(Task, ABC):
+class Sync(UpdateTask):
 
     def __init__(self, source: CommandSource):
         super().__init__(source)
@@ -63,16 +62,16 @@ class Sync(Task, ABC):
         super().reply(msg, with_prefix=with_prefix)
 
     def update_world(self, needs_confirm: bool = True, ignore_file: bool = False, backup: bool = True) -> None:
-        if not self.__check_paths():
+        if not self.check_paths():
             return
 
         global abort_sync, sync_requested
         abort_sync = False
         sync_requested = True
 
-        if ignore_file or self.config.get().sync_ignore_files:
+        if ignore_file or self.config.sync_ignore_files:
             self.ignore_file = True
-        if not backup or not self.config.get().backup_before_sync:
+        if not backup or not self.config.backup_before_sync:
             self.backup = False
         if not needs_confirm:
             self.confirm()
@@ -80,8 +79,8 @@ class Sync(Task, ABC):
 
         self.reply(RText(self.tr('echo'), RColor.gold))
         self.reply(tr("task.upstream.current_upstream",
-                      name=RText(self.config.get().upstream, RColor.dark_aqua),
-                      path=RText(self.config.get().upstream_server_path, RColor.gray)))
+                      name=RText(self.config.upstream, RColor.dark_aqua),
+                      path=RText(self.config.upstream_server_path, RColor.gray)))
         self.reply(
             click_and_run(RText(self.tr('confirm_hint'), RColor.green), self.tr('confirm_hover'), mk_cmd('confirm'))
             + '  '
@@ -116,11 +115,11 @@ class Sync(Task, ABC):
             self.server.wait_for_start()
 
             self.server.logger.info('Deleting world')
-            self.remove_worlds(self.config.get().self_server_path)
+            self.remove_worlds(self.config.self_server_path)
 
-            self.server.logger.info('Copying {} worlds to the server'.format(self.config.get().upstream))
+            self.server.logger.info('Copying {} worlds to the server'.format(self.config.upstream))
 
-            self.copy_worlds(self.config.get().upstream_server_path, self.config.get().self_server_path)
+            self.copy_worlds(self.config.upstream_server_path, self.config.self_server_path)
             self.server.logger.info('Sync done, starting the server')
             self.server.start()
 
@@ -153,7 +152,7 @@ class Sync(Task, ABC):
             reply_message(self.source, tr('command.confirm.no_confirm'))
         else:
             sync_world = threading.Thread(target=self._update_world)
-            update_world = threading.Thread(target=self.backup_before_sync)
+            backup_world = threading.Thread(target=self.backup_before_sync)
             if not self.backup:
                 sync_world.start()
                 sync_requested = False
@@ -161,10 +160,10 @@ class Sync(Task, ABC):
                 self.backup = True
                 return
 
-            update_world.start()
+            backup_world.start()
             sync_world.start()
 
-            update_world.join()
+            backup_world.join()
             sync_world.join()
             sync_requested = False
 
@@ -173,32 +172,6 @@ class Sync(Task, ABC):
         abort_sync = True
         sync_requested = False
         self.reply(self.tr('abort'))
-
-    def __check_paths(self) -> bool:
-        success = True
-
-        def check_dir(path: str) -> bool:
-            if not os.path.exists(path):
-                self.reply(self.tr('path.not_exist', RText(path, RColor.green)))
-                return False
-            if not os.path.isdir(path):
-                self.reply(self.tr('path.not_a_dir', RText(path, RColor.green)))
-                return False
-            return True
-
-        def check_server_path(path: str):
-            if not check_dir(path):
-                return False
-            for world in self.config.world_names:
-                world_path = os.path.join(path, world)
-                if not check_dir(world_path):
-                    return False
-            return True
-
-        success = success and check_server_path(self.config.upstream_server_path)
-        success = success and check_server_path(self.config.self_server_path)
-
-        return success
 
     def remove_worlds(self, folder: str):
         for world in self.config.world_names:

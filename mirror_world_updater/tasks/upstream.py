@@ -1,4 +1,3 @@
-from abc import ABC
 from typing import Union
 
 from mcdreforged.api.all import *
@@ -7,7 +6,7 @@ from mirror_world_updater.tasks.__init__ import Task
 from mirror_world_updater.utils.utils import click_and_run, mk_cmd
 
 
-class Upstream(Task, ABC):
+class Upstream(Task):
     server_list = [
         'survival',
         'mirror',

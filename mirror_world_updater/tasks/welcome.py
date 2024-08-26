@@ -1,4 +1,3 @@
-from abc import ABC
 from typing import Union, Dict
 
 from mcdreforged.api.all import *
@@ -11,7 +10,7 @@ from mirror_world_updater.utils import help_message_utils
 from mirror_world_updater.utils.utils import mk_cmd
 
 
-class Welcome(Task, ABC):
+class Welcome(Task):
     COMMON_COMMANDS = ['', 'help', 'upstream', 'update', 'confirm', 'abort']
 
     def __init__(self, source: CommandSource):

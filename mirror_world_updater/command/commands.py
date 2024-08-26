@@ -50,28 +50,41 @@ class CommandManager:
         Sync(source).abort()
 
     def add_region(self, source: CommandSource, context: CommandContext):
-        if context is None:
+        if context.get('x') is None and context.get('z') is None and context.get('d') is None:
             Region(source).add_region_here()
         else:
             x: int = context.get('x')
             z: int = context.get('z')
-            dim: int = context.get('dim')
+            dim: int = context.get('d')
             Region(source).add_region(RegionFile(x, z, dim))
 
     def del_region(self, source: CommandSource, context: CommandContext):
-        pass
+        if context.get('x') is None and context.get('z') is None and context.get('d') is None:
+            Region(source).del_region_here()
+        else:
+            x: int = context.get('x')
+            z: int = context.get('z')
+            dim: int = context.get('d')
+            Region(source).del_region(RegionFile(x, z, dim))
 
-    def clean_region_list(self, source: CommandSource, context: CommandContext):
-        pass
+    def clean_region_list(self, source: CommandSource, _):
+        Region(source).clear_region_list()
 
     def show_region_list(self, source: CommandSource, context: CommandContext):
-        pass
+        Region(source).show_region_list()
 
     def show_history(self, source: CommandSource, context: CommandContext):
-        pass
+        Region(source).show_history()
 
     def region_update(self, source: CommandSource, context: CommandContext):
-        pass
+        needs_confirm = context.get('confirm', 0) == 0
+        Region(source).update_region(need_confirm=needs_confirm)
+
+    def region_confirm(self, source: CommandSource):
+        Region(source).confirm()
+
+    def region_abort(self, source: CommandSource):
+        Region(source).abort()
 
     def register_command(self):
         permissions = self.config.permission
@@ -105,21 +118,27 @@ class CommandManager:
         builder.arg('server', GreedyText).suggests(lambda: Upstream.server_list)
 
         # region
-        builder.command('add', self.add_region)
-        builder.command('add [x] [z] [d]', self.add_region)
-        builder.command('del', self.del_region)
-        builder.command('del [x] [z] [d]', self.del_region)
-        builder.command('del-all', self.clean_region_list)
-        builder.command('list', self.show_region_list)
-        builder.command('history', self.show_history)
+        builder.command('region', lambda src: self.cmd_help(src, {'what': 'region'}))
+        builder.command('region add', self.add_region)
+        builder.command('region add <x> <z> <d>', self.add_region)
+        builder.command('region del', self.del_region)
+        builder.command('region del <x> <z> <d>', self.del_region)
+        builder.command('region del-all', self.clean_region_list)
+        builder.command('region list', self.show_region_list)
+        builder.command('region history', self.show_history)
+        builder.command('region update', self.region_update)
+        builder.command('region update <flags>', self.region_update)
 
         builder.arg('x', Integer)
         builder.arg('z', Integer)
         builder.arg('d', Integer)
+        builder.arg('flags', Text)
 
         # command
         builder.command('confirm', self.confirm)
         builder.command('abort', self.abort)
+        builder.command('region confirm', self.region_confirm)
+        builder.command('region abort', self.region_abort)
 
         root = (
             Literal(self.config.prefix).runs(self.cmd_welcome)
@@ -147,17 +166,6 @@ class CommandManager:
                 node.runs(self.cmd_sync)
             return node_sc
 
-        # region update
-        def make_region_update() -> Literal:
-            node_sc = create_subcommand('region update')
-            for node in [node_sc]:
-                set_confirm_able(node)
-                set_ignore_files(node)
-                set_backup(node)
-                node.runs(self.region_update)
-            return node_sc
-
         root.then(make_sync_cmd())
-        root.then(make_region_update())
 
         self.server.register_command(root)

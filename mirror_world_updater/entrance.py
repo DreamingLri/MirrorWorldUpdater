@@ -18,12 +18,15 @@ def on_load(server: PluginServerInterface, old):
     try:
         config = server.load_config_simple(target_class=Config, failure_policy='raise')
         set_config_instance(config)
+    except Exception as e:
+        server.logger.error('Failed to load config: {}'.format(e))
+    try:
         command_manager = CommandManager(server)
         command_manager.register_command()
 
         server.register_help_message(config.prefix, mcdr_globals.metadata.get_description_rtext())
     except Exception as e:
-        server.logger.error('Failed to load config: {}'.format(e))
+        server.logger.error('Failed to register command: {}'.format(e))
 
 
 def on_player_joined(server: PluginServerInterface, player: str, info: Info):

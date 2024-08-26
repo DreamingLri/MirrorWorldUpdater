@@ -16,6 +16,7 @@ mirror_world_updater:
           §7{prefix} help §e[<what>]§r: 展示全部指令/给定指令的详细帮助
           §7{prefix} update [...]§r: 从目标服务器同步世界 详情请查看 §7{prefix} help update§r 
           §7{prefix} upstream [...]§r: 展示目标服务器和服务器列表 详情请查看 §7{prefix} help upstream§r 
+          §7{prefix} upstream [...]§r: 从目标服务器同步区域 详情请查看 §7{prefix} help region§r
           §7{prefix} confirm§r: 确认当前的任务操作
           §7{prefix} abort§r: 终止当前的任务操作
 
@@ -40,6 +41,20 @@ mirror_world_updater:
           §7--ignore§r: 忽略在ignore_files列表中的文件
           §7--no-backup§r: 跳过备份步骤
 
+        region: |-
+          §3[region 命令帮助]§r
+          从目标服务器同步区块
+          §3[指令帮助]§r
+          §7{prefix} region add§r
+          §7{prefix} region add §7[x] [z] [d]§r
+          §7{prefix} region del§r
+          §7{prefix} region del §7[x] [z] [d]§r
+          §7{prefix} region list§r
+          §7{prefix} region history§r
+          §7{prefix} region update [flags]§r
+          §3[可选参数]§r
+          §7--confirm§r: 跳过确认步骤直接同步
+
     upstream:
       title: '[目标服务器列表]'
       current_upstream: 当前目标服务器是 {name}, 文件路径为 {path}
@@ -61,8 +76,35 @@ mirror_world_updater:
         not_a_dir: 此地址 {} 不是一个目录
       countdown:
         intro: '{} 秒后同步世界'
-        text: '{} 秒后世界将被同步'
+        text: '{} 秒后世界将被§c同步§r'
         hover: 点击这里或输入 {} 以取消同步！
+
+    region:
+      only_player: '该指令仅支持玩家执行'
+      already_exist: '列表中已存在该区域文件 {}'
+      added: '区域文件 {} 已添加'
+      not_exist: '列表中不存在该区域文件 {}'
+      deleted: '区域文件 {} 已删除'
+      cleared: '区域文件列表已清空'
+      list:
+        title: '[区域列表]'
+        amount: '已添加 {amount} 个区域:'
+        hover: '点击添加其他区域'
+      history:
+        title: '[上次更新结果]'
+        amount: '上次操作更新了 {} 个区域'
+        succeeded: '成功'
+        failed: '失败'
+      confirm_hint: '[确认]'
+      confirm_hover: '点击以确认更新'
+      abort_hint: '[取消]'
+      abort_hover: '点击以取消更新'
+      abort: '取消更新'
+      aborted: '更新已取消!'
+      countdown:
+        intro: '{} 后更新区域'
+        text: '{} 秒后世界将被§c更新§r'
+        hover: '点击这里或输入 {} 以取消更新!'
 
     welcome:
       title: '{name} {version}'

@@ -1,5 +1,5 @@
 from abc import abstractmethod, ABC
-from typing import Union, TypeVar, Generic
+from typing import Union
 
 from mcdreforged.api.all import *
 

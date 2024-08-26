@@ -1,4 +1,3 @@
-from abc import ABC
 from typing import Optional, Union
 
 from mcdreforged.api.all import *
@@ -8,9 +7,9 @@ from mirror_world_updater.utils.utils import reply_message, tr, mk_cmd
 from mirror_world_updater.utils import help_message_utils
 
 
-class HelpMessage(Task, ABC):
+class HelpMessage(Task):
     COMMANDS_WITH_DETAILED_HELP = [
-        'upstream', 'update'
+        'upstream', 'update', 'region'
     ]
 
     def __init__(self, source: CommandSource):
