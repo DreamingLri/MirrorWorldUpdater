@@ -88,7 +88,7 @@ mirror_world_updater:
       cleared: '区域文件列表已清空'
       list:
         title: '[区域列表]'
-        amount: '已添加 {amount} 个区域:'
+        amount: '已添加 {} 个区域:'
         hover: '点击添加其他区域'
       history:
         title: '[上次更新结果]'
