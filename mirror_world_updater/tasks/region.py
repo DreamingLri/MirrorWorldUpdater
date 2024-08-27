@@ -172,8 +172,8 @@ class Region(UpdateTask):
 
         history_list.clear()
         for region in region_list:
-            for region_file in region.to_file_list():
-                try:
+            try:
+                for region_file in region.to_file_list():
                     for world in self.config.world_names:
                         src_world_file = os.path.join(self.config.upstream_server_path, world)
                         dest_world_file = os.path.join(self.config.self_server_path, world)
@@ -187,14 +187,14 @@ class Region(UpdateTask):
                         else:
                             self.server.logger.info('- "{}" -> "{}"'.format(src_file, dest_file))
                             shutil.copyfile(src_file, dest_file)
-                except Exception as e:
-                    flag = False
-                    self.server.logger.error(e)
-                    info = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                else:
-                    flag = True
-                    info = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                history_list.append((region, flag, info))
+            except Exception as e:
+                flag = False
+                self.server.logger.error(e)
+                info = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                flag = True
+                info = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            history_list.append((region, flag, info))
 
         region_list.clear()
         time.sleep(1)

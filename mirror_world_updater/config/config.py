@@ -22,9 +22,9 @@ class Config(Serializable):
     self_server_path: str = './server'
     world_names: List[str] = ['world']
     dimension_region: Dict[str, Union[str, List[str]]] = {
-        '-1': ['DIM-1/region', 'DIM-1/poi'],
-        '0': ['region', 'poi'],
-        '1': ['DIM1/region', 'DIM1/poi']
+        '-1': ['DIM-1/region', 'DIM-1/poi', 'DIM-1/entities'],
+        '0': ['region', 'poi', 'entities'],
+        '1': ['DIM1/region', 'DIM1/poi', 'DIM1/entities'],
     }
     count_down: int = 10
     backup_before_sync: bool = True
