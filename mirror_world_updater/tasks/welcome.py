@@ -11,7 +11,7 @@ from mirror_world_updater.utils.utils import mk_cmd
 
 
 class Welcome(Task):
-    COMMON_COMMANDS = ['', 'help', 'upstream', 'update', 'confirm', 'abort']
+    COMMON_COMMANDS = ['', 'help', 'upstream', 'region', 'update', 'confirm', 'abort']
 
     def __init__(self, source: CommandSource):
         super().__init__(source)
@@ -26,14 +26,14 @@ class Welcome(Task):
     def show_welcome(self) -> None:
         self.reply(TextComponent.title(self.tr(
             'title',
-            name=RText(mcdr_globals.metadata.name, RColor.dark_aqua),
+            name=RText(mcdr_globals.metadata.name, RColor.aqua),
             version=RText(f'v{mcdr_globals.metadata.version}', RColor.gold),
         )))
         self.reply(mcdr_globals.metadata.get_description_rtext())
 
         self.reply(
             self.tr('common_commands').
-            set_color(RColor.dark_aqua).
+            set_color(RColor.aqua).
             h(self.tr('common_commands.hover', TextComponent.command('help'))).
             c(RAction.suggest_command, mk_cmd('help'))
         )
@@ -41,13 +41,18 @@ class Welcome(Task):
         for cmd in self.COMMON_COMMANDS:
             self.reply(helps[cmd])
 
-        self.reply(self.tr('quick_actions.title').set_color(RColor.dark_aqua))
+        self.reply(self.tr('quick_actions.title').set_color(RColor.aqua))
         with self.source.preferred_language_context():
             buttons = [
                 RTextList('[', self.tr('quick_actions.update'), ']').
                 set_color(RColor.green).
                 h(TextComponent.command('update')).
-                c(RAction.suggest_command, mk_cmd('update --confirm'))
+                c(RAction.suggest_command, mk_cmd('update --confirm')),
+
+                RTextList('[', self.tr('quick_actions.add_region'), ']').
+                set_color(RColor.green).
+                h(TextComponent.command('region add')).
+                c(RAction.suggest_command, mk_cmd('region add'))
             ]
         self.reply(RTextBase.join(' ', buttons))
 

@@ -77,7 +77,7 @@ class CommandManager:
         Region(source).show_history()
 
     def region_update(self, source: CommandSource, context: CommandContext):
-        needs_confirm = context.get('confirm', 0) == 0
+        needs_confirm = context.get('flags') != '--confirm'
         Region(source).update_region(need_confirm=needs_confirm)
 
     def region_confirm(self, source: CommandSource):

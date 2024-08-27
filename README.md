@@ -10,7 +10,9 @@ A plugin to sync any server world to the mirror server
 
 `mcdreforged >= 2.0.0`
 
-`prime_backup >=1.7.4`
+`prime_backup >= 1.7.4`
+
+`minecraft_data_api >= 1.5.0`
 
 ## Configure
 
@@ -36,20 +38,18 @@ The minimum permission level to use the command
 
 Default value:
 ```
-"upstream_list": [
-    {
-        "server": "survival",
-        "server_path": "../survival/server"
-    },
-    {
-        "server": "mirror",
-        "server_path": "../mirror/server"
-    },
-    {
-        "server": "creative",
-        "server_path": "../creative/server"
-    }
-]
+{
+    "server": "survival",
+    "server_path": "../survival/server"
+},
+{
+    "server": "mirror",
+    "server_path": "../mirror/server"
+},
+{
+    "server": "creative",
+    "server_path": "../creative/server"
+}
 ```
 
 The paths of servers you want to sync
@@ -69,6 +69,16 @@ World list to sync
 For Vanilla servers: `["world"]`
 
 For Spigot servers: `['world', 'world_nether', 'world_the_end']`
+
+### `dimension_region`
+
+Default value:
+```
+'-1': ['DIM-1/region', 'DIM-1/poi'],
+'0': ['region', 'poi'],
+'1': ['DIM1/region', 'DIM1/poi']
+```
+Region files to update
 
 ### `count_down`
 
@@ -106,6 +116,8 @@ If enabled, the files or dirs in list will be ignored when copying the world
 `!!sync`: Display help message
 
 `!!sync upstream`: Set upstream worlds
+
+`!!sync region`: Update the selected regions
 
 `!!sync update`: Sync worlds
 

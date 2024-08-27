@@ -1,8 +1,10 @@
+import datetime
 import os
 import shutil
 import time
 from typing import Union, Iterable
 from mcdreforged.api.all import *
+from datetime import datetime
 
 from mirror_world_updater import mcdr_globals
 from mirror_world_updater.config.config import Config
@@ -38,6 +40,9 @@ class RegionFile:
         else:
             pass
         return file_list
+
+    def to_format(self):
+        return '[x={}, z={}, d={}]'.format(self.x, self.z, self.dim)
 
     def __eq__(self, other):
         if not isinstance(other, type(self)):
@@ -103,8 +108,8 @@ class Region(UpdateTask):
 
     def show_region_list(self) -> None:
         global region_list
-        self.reply(self.tr('list.title'))
-        self.reply(self.tr('list.amount', len(region_list))
+        self.reply(RText(self.tr('list.title'), RColor.aqua))
+        self.reply(self.tr('list.amount', RText(len(region_list), RColor.aqua))
                    + click_and_run(
             RText('[+]', RColor.green),
             self.tr('list.hover'),
@@ -115,7 +120,7 @@ class Region(UpdateTask):
 
     def show_history(self) -> None:
         global history_list, region_list
-        self.reply(self.tr('history.title'))
+        self.reply(RText(self.tr('history.title'), RColor.aqua))
         self.reply(self.tr('history.amount', RText(len(history_list), RColor.aqua)))
         msg = {True: RText(self.tr('history.succeeded'), RColor.green),
                False: RText(self.tr('history.failed'), RColor.red)}
@@ -138,7 +143,8 @@ class Region(UpdateTask):
                       name=RText(self.config.get().upstream, RColor.dark_aqua),
                       path=RText(self.config.get().upstream_server_path, RColor.gray)))
         self.reply(
-            click_and_run(RText(self.tr('confirm_hint'), RColor.green), self.tr('confirm_hover'), mk_cmd('region confirm'))
+            click_and_run(RText(self.tr('confirm_hint'), RColor.green), self.tr('confirm_hover'),
+                          mk_cmd('region confirm'))
             + '  '
             + click_and_run(RText(self.tr('abort_hint'), RColor.red), self.tr('abort_hover'), mk_cmd('region abort'))
         )
@@ -167,27 +173,28 @@ class Region(UpdateTask):
         history_list.clear()
         for region in region_list:
             for region_file in region.to_file_list():
-                for world in self.config.world_names:
-                    src_world_file = os.path.join(self.config.upstream_server_path, world)
-                    dest_world_file = os.path.join(self.config.self_server_path, world)
+                try:
+                    for world in self.config.world_names:
+                        src_world_file = os.path.join(self.config.upstream_server_path, world)
+                        dest_world_file = os.path.join(self.config.self_server_path, world)
 
-                    src_file = os.path.join(str(src_world_file), region_file)
-                    dest_file = os.path.join(str(dest_world_file), region_file)
-                    try:
+                        src_file = os.path.join(str(src_world_file), region_file)
+                        dest_file = os.path.join(str(dest_world_file), region_file)
+
                         if not os.path.isfile(src_file) and os.path.isfile(dest_file):
                             os.remove(dest_file)
                             self.server.logger.info('- *deleted* -> "{}"'.format(src_file, dest_file))
                         else:
                             self.server.logger.info('- "{}" -> "{}"'.format(src_file, dest_file))
                             shutil.copyfile(src_file, dest_file)
-                    except Exception as e:
-                        flag = False
-                        self.server.logger.error(e)
-                        info = '"{}" - *failed* -> "{}"'.format(src_file, dest_file)
-                    else:
-                        flag = True
-                        info = '"{}" - *succeeded* -> "{}"'.format(src_file, dest_file)
-                    history_list.append((region, flag, info))
+                except Exception as e:
+                    flag = False
+                    self.server.logger.error(e)
+                    info = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                else:
+                    flag = True
+                    info = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                history_list.append((region, flag, info))
 
         region_list.clear()
         time.sleep(1)

@@ -12,6 +12,8 @@
 
 `prime_backup >=1.7.4`
 
+`minecraft_data_api >= 1.5.0`
+
 ## 配置
 
 配置文件: `config/mirror_world_updater/config.json`
@@ -36,20 +38,18 @@ confirm: int = 1
 
 默认值:
 ```
-"upstream_list": [
-        {
-            "server": "survival",
-            "server_path": "../survival/server"
-        },
-        {
-            "server": "mirror",
-            "server_path": "../mirror/server"
-        },
-        {
-            "server": "creative",
-            "server_path": "../creative/server"
-        }
-    ]
+{
+    "server": "survival",
+    "server_path": "../survival/server"
+},
+{
+    "server": "mirror",
+    "server_path": "../mirror/server"
+},
+{
+    "server": "creative",
+    "server_path": "../creative/server"
+}
 ```
 
 用于设置同步的服务器及其地址
@@ -69,6 +69,16 @@ confirm: int = 1
 ~~香草~~原版服务端: `["world"]`
 
 Spigot 服务端: `['world', 'world_nether', 'world_the_end']`
+
+### `dimension_region`
+
+默认值:
+```
+'-1': ['DIM-1/region', 'DIM-1/poi'],
+'0': ['region', 'poi'],
+'1': ['DIM1/region', 'DIM1/poi']
+```
+需要更新的区域文件
 
 ### `count_down`
 
@@ -109,6 +119,8 @@ Spigot 服务端: `['world', 'world_nether', 'world_the_end']`
 `!!sync`: 展示帮助页面
 
 `!!sync upstream`: 设置上传服务器列表
+
+`!!sync region`: 进行区域同步
 
 `!!sync update`: 同步世界
 

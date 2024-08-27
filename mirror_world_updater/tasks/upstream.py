@@ -28,16 +28,16 @@ class Upstream(Task):
         super().reply(msg, with_prefix=with_prefix)
 
     def list_upstream(self) -> None:
-        self.reply(RText(self.tr("title"), RColor.dark_aqua))
+        self.reply(RText(self.tr("title"), RColor.aqua))
         self.reply(self.tr(
             "current_upstream",
-            name=RText(self.upstream, RColor.dark_aqua),
+            name=RText(self.upstream, RColor.aqua),
             path=RText(self.upstream_server_path, RColor.gray)))
 
         for server_info in self.upstream_list:
             self.reply(self.tr(
                 "list_upstream",
-                name=RText(server_info.server, RColor.dark_aqua),
+                name=RText(server_info.server, RColor.aqua),
                 path=RText(server_info.server_path, RColor.gray))
                 + ' ' + click_and_run(
                 RText('[+]', RColor.dark_green),
@@ -50,7 +50,7 @@ class Upstream(Task):
             if server_info.server == server_name:
                 self.update_config.upstream = server_name
                 self.update_config.upstream_server_path = server_info.server_path
-                self.reply(self.tr("set_success", RText(server_name, RColor.dark_aqua)))
+                self.reply(self.tr("set_success", RText(server_name, RColor.aqua)))
                 self.server.save_config_simple(self.config)
                 return
 

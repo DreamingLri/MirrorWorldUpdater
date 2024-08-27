@@ -23,28 +23,28 @@ mirror_world_updater:
       node_help:
         title: '[详细帮助]'
         upstream: |-
-          §3[upstream 命令帮助]§r
+          §b[upstream 命令帮助]§r
           设置同步服务器
-          §3【指令帮助】§r
+          §b[指令帮助]§r
           §7{prefix} upstream list §r: 展示目标服务器列表
           §7{prefix} upstream set §e<server>§r: 设置目标服务器为 §7<server>§r
-          §3[参数帮助]§r
-          §3<server>§r: 你想要同步的服务器
+          §b[参数帮助]§r
+          §7<server>§r: 你想要同步的服务器
 
         update: |-
-          §3[update 命令帮助]§r
+          §b[update 命令帮助]§r
           从目标服务器同步世界
-          §3[指令帮助]§r
+          §b[指令帮助]§r
           §7{prefix} update §7[--flags]§r
-          §3[可选参数]§r
+          §b[可选参数]§r
           §7--confirm§r: 跳过确认步骤直接同步
           §7--ignore§r: 忽略在ignore_files列表中的文件
           §7--no-backup§r: 跳过备份步骤
 
         region: |-
-          §3[region 命令帮助]§r
+          §b[region 命令帮助]§r
           从目标服务器同步区块
-          §3[指令帮助]§r
+          §b[指令帮助]§r
           §7{prefix} region add§r
           §7{prefix} region add §7[x] [z] [d]§r
           §7{prefix} region del§r
@@ -52,7 +52,7 @@ mirror_world_updater:
           §7{prefix} region list§r
           §7{prefix} region history§r
           §7{prefix} region update [flags]§r
-          §3[可选参数]§r
+          §b[可选参数]§r
           §7--confirm§r: 跳过确认步骤直接同步
 
     upstream:
@@ -113,6 +113,7 @@ mirror_world_updater:
       quick_actions:
         title: '[快捷操作]'
         update: '同步世界'
+        add_region: '添加区域'
       simple_sync: '点击以同步'
 
   text_component:
