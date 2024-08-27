@@ -45,13 +45,19 @@ mirror_world_updater:
           §b[region Command Usage]§r
           Update regions from upstream server
           §b[Usages]§r
-          §7{prefix} region add§r
-          §7{prefix} region add §7[x] [z] [d]§r
-          §7{prefix} region del§r
-          §7{prefix} region del §7[x] [z] [d]§r
-          §7{prefix} region list§r
-          §7{prefix} region history§r
-          §7{prefix} region update [flags]§r
+          §7{prefix} region add§r: Add region to update list
+          §7{prefix} region add §7[x] [z] [d]§r: Remove region from update list
+          §7{prefix} region del§r: Remove region from update list
+          §7{prefix} region del §7[x] [z] [d]§r: Remove region from update list
+          §7{prefix} region del-all§r: Remove all the regions
+          §7{prefix} region list§r: List the regions in update list
+          §7{prefix} region history§r: Query the last update result
+          §7{prefix} region update [flags]§r Restart server & update the regions selected
+          §b[Arguments]§r
+          §7[x] [z]§r: Region file coordinates
+          Coordinates of r.§b-3§r.§d1§r.mca are §bx=-3 §dz=1§r
+          §7[d]§r: Dimension number
+          §aOverworld = 0§4 The nether = -1§d The end = 1§r
           §b[Optional flags]§r
           §7--confirm§r: Skip the confirm step and start the sync directly
 

@@ -45,13 +45,19 @@ mirror_world_updater:
           §b[region 命令帮助]§r
           从目标服务器同步区块
           §b[指令帮助]§r
-          §7{prefix} region add§r
-          §7{prefix} region add §7[x] [z] [d]§r
-          §7{prefix} region del§r
-          §7{prefix} region del §7[x] [z] [d]§r
-          §7{prefix} region list§r
-          §7{prefix} region history§r
-          §7{prefix} region update [flags]§r
+          §7{prefix} region add§r: 添加区域到更新列表
+          §7{prefix} region add §7[x] [z] [d]§r: 添加区域到更新列表
+          §7{prefix} region del§r: 自更新列表移除区域
+          §7{prefix} region del §7[x] [z] [d]§r: 自更新列表移除区域
+          §7{prefix} region del-all§r: 移除所有要更新的区域
+          §7{prefix} region list§r: 列出更新列表中的区域
+          §7{prefix} region history§r: 查询上次更新的结果
+          §7{prefix} region update [flags]§r: 重启服务端并更新选定区域
+          §b[参数帮助]§r
+          §7[x] [z]§r: 区域文件坐标
+          如r.§b-3§r.§d1§r.mca的区域文件坐标为§bx=-3 §dz=1§r
+          §7[d]§r: 维度序号
+          §a主世界 = 0§4 下界 = -1§d 末地 = 1§r
           §b[可选参数]§r
           §7--confirm§r: 跳过确认步骤直接同步
 
